@@ -33,15 +33,16 @@
             "lines": ["You slowly draw your attention inward, using your will to focus past the pain and assess your body."],
             "sceneType": "node",
             "branches": [
-                {"bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine."},
-                {"bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most."},
-                {"bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this."},
+                {"bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "perk", "perk": "Hale"}},
+                {"bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "perk", "perk": "Athletic"}},
+                {"bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this.", "event": {"type": "perk", "perk": "Strong"}},
                 {"bScene": "1.1.1.0", "prompt": "Nothing appears out of the ordinary."},
                 {"bScene": "1.1.1.1", "prompt": "Something feels missing..."}
             ]
         },
         "1.1.1.0": {
             "lines": ["You also notice the pain localised in your chest is likely fractures in your rib-plates [Gain status: Wounded Torso]. It may be immensly painful, but you don’t feel faint or nauseous. Your mind drifts back to your current situation."],
+            "event": {"type": "status", "status": "Wounded torso"},
             "sceneType": "leaf",
             "root": "1.1.1",
             "nextScene": "1.1"
@@ -52,23 +53,20 @@
             "branches": [
                 {
                     "bScene": "1.1.1.0",
-                    "prompt": "I see a stump where my right arm was. Sudden pain radiates from where my forearm would be, beyond the bloodied bandages."
+                    "prompt": "I see a stump where my right arm was. Sudden pain radiates from where my forearm would be, beyond the bloodied bandages.",
+                    "event": {"type": "perk", "perk": "Missing arm"}
                 },
                 {
                     "bScene": "1.1.1.0",
-                    "prompt": "When I bring my hand to my face, I feel Brassteel where my jaw should be. The sensation of hinges, springs , rods and welded plates below my eyes are impossible to ignore now."
+                    "prompt": "When I bring my hand to my face, I feel Brassteel where my jaw should be. The sensation of hinges, springs, rods and welded plates below my eyes are impossible to ignore now.",
+                    "event": {"type": "perk", "perk": "Masque de Fer"}
                 },
                 {
                     "bScene": "1.1.1.0",
-                    "prompt": "My back must have been destroyed in the fall, now an exoskelleton fused to my spine supports my body. The design is not known to me, and the material seems exotic. Can I rely on this to live?"
+                    "prompt": "My back must have been destroyed in the fall, now an exoskelleton fused to my spine supports my body. The design is not known to me, and the material seems exotic. Can I rely on this to live?",
+                    "event": {"type": "perk", "perk": "Rebuilt"}
                 }
             ]
         }
-    },
-    "currScene": "1.0",
-    "player": {
-        "perks": [],
-        "inventory": [],
-        "playerName": ""
     }
 }
