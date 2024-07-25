@@ -1,22 +1,5 @@
 {
     "scenes": {
-        "1.0": {
-            "lines": [
-                "You slowly come to on a slate bed. Your brain feels like its burning, and your chest thunders with fast beats like a steam-chisel. Your last recollection is falling  into a bottomless chasm. Who are you?"
-            ],
-            "sceneType": "rootPrompt",
-            "branches": [
-                {"bScene": "1.0.1", "prompt": ""},
-                {"bScene": "1.1", "prompt": ""}
-            ]
-        },
-        "1.0.1": {
-            "lines": [
-                "That is a story for another day... who are you?"
-            ],
-            "sceneType": "loop",
-            "nextScene": "1.0"
-        },
         "1.1": {
             "lines": [
                 "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
