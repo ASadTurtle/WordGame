@@ -32,7 +32,7 @@ Right now you are probably my Rubber Duck.
 
 If your reading this still of your own volition, thanks for sticking around, and
 props for getting through a readMe file without getting bored. I'll take this
-opportunity to say if you ahve any feedback for my project, I truly would love to
+opportunity to say if you have any feedback for my project, I truly would love to
 hear it, you can DM me on my Discord account any time, which is likely where you
 found this repo in the first place.
 
