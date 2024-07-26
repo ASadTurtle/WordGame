@@ -1,6 +1,7 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Player class stores all data pertinent to the player character.
@@ -11,9 +12,9 @@ import java.util.ArrayList;
  */
 public class Player {
     private String name;
-    private ArrayList<String> perks;
-    private ArrayList<String> items;
-    private ArrayList<String> statuses;
+    private List<String> perks;
+    private List<String> items;
+    private List<String> statuses;
 
     /**
      * Construct a new player, with the given name they have chosen. The Game
@@ -38,7 +39,7 @@ public class Player {
      * @param items
      * @param statuses
      */
-    public Player(String name, ArrayList<String> perks, ArrayList<String> items, ArrayList<String> statuses) {
+    public Player(String name, List<String> perks, List<String> items, List<String> statuses) {
         this.name = name;
         this.perks = perks;
         this.items = items;

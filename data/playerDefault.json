@@ -1,8 +1,6 @@
 {
-    "player": {
-        "name": "Aurellion",
-        "items": [],
-        "perks": [],
-        "statuses": []
-    }
+    "name": "Aurellion",
+    "perks": [],
+    "items": [],
+    "statuses": []
 }

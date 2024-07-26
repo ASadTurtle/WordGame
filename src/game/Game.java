@@ -1,6 +1,16 @@
 package game;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import scenes.Scene;
 
@@ -21,10 +31,33 @@ import scenes.Scene;
  * 
  */
 public class Game {
-    private Player player;
+    private static Player player;
     private HashMap<String, Scene> scenes;
 
-    public static void main(String[] args) {
-        // Create a new player and scenes instance by parsing appropriate JSON files
+    public static void main(String[] args) throws Exception {
+        // Create a new player from JSON file.
+        BufferedReader br = new BufferedReader(new FileReader("data\\playerDefault.json"));
+        JSONObject jPlayer = (JSONObject) (new JSONParser().parse(br));
+        parsePlayer(jPlayer);
+
+        // Create a new scene library
+    }
+
+    /**
+     * Parses a JSONObject from a player record into a Player object for the game
+     * to use.
+     * 
+     * @param jPlayer
+     */
+    private static void parsePlayer(JSONObject jPlayer) {
+        String name = (String) jPlayer.get("name");
+        List<String> perks = parseList(jPlayer, "perks");
+        List<String> items = parseList(jPlayer, "items");
+        List<String> statuses = parseList(jPlayer, "statuses");
+        player = new Player(name, perks, items, statuses);
+    }
+
+    private static List<String> parseList(JSONObject j, String key) {
+        return Arrays.asList((String[]) ((JSONArray) j.get(key)).toArray());
     }
 }
