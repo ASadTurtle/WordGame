@@ -39,6 +39,7 @@ public class Game {
         BufferedReader br = new BufferedReader(new FileReader("data\\playerDefault.json"));
         JSONObject jPlayer = (JSONObject) (new JSONParser().parse(br));
         parsePlayer(jPlayer);
+        System.out.println(player.getName());
 
         // Create a new scene library
     }
@@ -54,10 +55,17 @@ public class Game {
         List<String> perks = parseList(jPlayer, "perks");
         List<String> items = parseList(jPlayer, "items");
         List<String> statuses = parseList(jPlayer, "statuses");
+
         player = new Player(name, perks, items, statuses);
     }
 
+    @SuppressWarnings("unchecked")
     private static List<String> parseList(JSONObject j, String key) {
-        return Arrays.asList((String[]) ((JSONArray) j.get(key)).toArray());
+        JSONArray jStatuses = (JSONArray) j.get(key);
+        List<String> statuses = new ArrayList<>();
+        jStatuses.forEach(status -> {
+            statuses.add((String) status);
+        });
+        return statuses;
     }
 }
