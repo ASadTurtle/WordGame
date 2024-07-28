@@ -36,7 +36,7 @@ opportunity to say if you have any feedback for my project, I truly would love t
 hear it, you can DM me on my Discord account any time, which is likely where you
 found this repo in the first place.
 
-When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Darven Saga'***
+When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Dwarven Saga'***
 
 ## Scene libraries
 
@@ -47,3 +47,23 @@ This includes their perks, statuses, items, and name. When the player creates a
 new save, they create a copy of the chapter.json file, which can be overwritten.
 This is to prevent save corruption, such as players not being able to traverse
 previous branches in later saves.
+
+### Personal notes
+
+Ideas for chapter storage:
+
+- All games stored in `./data` directory.
+- we can store different wordgames under different directories. I.e. `./data/CurseOfSigfried`, `./data/RyuuYukiMountain`, etc.
+- In these files, chapters are standardly named from `chapter1.json` to
+`chapterX.json`
+- When running the WordGame, it will prompt which game you would like to select,
+(options given are directory names in `./data`).
+- When saving a game, the game you started isnt important to the game for
+saving/loading. Game states and player data should be standard format regardless.
+- How do we know when we have completed a game? Potential scene type? (Maybe
+like `GameOverScene`, `ChapterEndScene`).
+- Should I make a WH40K story at some point?
+- Should I make a chapter document to JSON parsing tool? This will take
+fucking ages to make. What does standard input format look like?
+- Maybe new scene type specifically for dialogue with characters, that lets us
+repeat options of dialogue with them?
