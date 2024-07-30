@@ -48,6 +48,16 @@ new save, they create a copy of the chapter.json file, which can be overwritten.
 This is to prevent save corruption, such as players not being able to traverse
 previous branches in later saves.
 
+### Credits
+
+- Christian Politis: Teaching me to use Git like someone who has seen a computer
+before. General advice for maintaining this project for my portfolio. My
+original Rubber Duck for this project.
+- Tank: The digital pet turtle who monitors my progress. Second rubber duck for
+this project.
+- Dad: Nodding while I explain my project, discussing old CYOA books and games
+he used to play. Advising to touch grass.
+
 ### Personal notes
 
 Ideas for chapter storage:
