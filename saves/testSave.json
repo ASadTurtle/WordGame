@@ -1,0 +1,47 @@
+{
+    "currScene": "1.1",
+    "scenes": {
+        "1.1": {
+            "lines": [
+                "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
+            ],
+            "sceneType": "node", 
+            "branches": [
+                {"bIndex": "1", "bScene": "1.1.1", "prompt": "Assess my wounds"},
+                {"bIndex": "2", "bScene": "1.1.2", "prompt": "Try to stand"},
+                {"bIndex": "3", "bScene": "1.1.3", "prompt": "Try to remember"},
+                {"bIndex": "4", "bScene": "1.1.4", "prompt": "Listen"}
+            ]
+        },
+        "1.1.1.1": {
+            "lines": ["You also notice the pain localised in your chest is likely fractures in your rib-plates [Gain status: Wounded Torso]. It may be immensly painful, but you don’t feel faint or nauseous. Your mind drifts back to your current situation."],
+            "sceneType": "node",
+            "branches": [
+                {
+                    "bIndex": "1",
+                    "bScene": "1.1.1.0",
+                    "prompt": "I see a stump where my right arm was. Sudden pain radiates from where my forearm would be, beyond the bloodied bandages.",
+                    "event": {"type": "getPerk", "arg": "Missing arm"}
+                },
+                {
+                    "bIndex": "2",
+                    "bScene": "1.1.1.0",
+                    "prompt": "When I bring my hand to my face, I feel Brassteel where my jaw should be. The sensation of hinges, springs, rods and welded plates below my eyes are impossible to ignore now.",
+                    "event": {"type": "getPerk", "arg": "Masque de Fer"}
+                },
+                {
+                    "bIndex": "3",
+                    "bScene": "1.1.1.0",
+                    "prompt": "My back must have been destroyed in the fall, now an exoskelleton fused to my spine supports my body. The design is not known to me, and the material seems exotic. Can I rely on this to live?",
+                    "event": {"type": "getPerk", "arg": "Rebuilt"}
+                }
+            ]
+        }
+    },
+    "player": {
+        "name": "Aurellion",
+        "perks": ["Strong"],
+        "items": [],
+        "statuses": []
+    }
+}
