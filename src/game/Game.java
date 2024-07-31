@@ -110,13 +110,23 @@ public class Game {
     }
 
     /**
+     * Print init options to player on game init.
+     */
+    private static void printMainMenu() {
+        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
+        System.out.println("1. New Game");
+        System.out.println("2. Load");
+        System.out.println("3. Quit\n");
+    }
+
+    /**
      * Prints commands for load menu
      */
     private static void logHelpLoad() {
-        System.out.println("<save_number> - load save");
-        System.out.println("<[b]ack>      - return to main menu");
-        System.out.println("<[q]uit>      - quit the game");
-        System.out.println("<[h]elp>      - print this message");
+        System.out.println("<save_number>   - load save");
+        System.out.println("<[b]ack>        - return to main menu");
+        System.out.println("<[q]uit>        - quit the game");
+        System.out.println("<[h]elp>        - print this message");
         System.out.println();
     }
 
@@ -133,16 +143,6 @@ public class Game {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         else
             Runtime.getRuntime().exec("clear");
-    }
-
-    /**
-     * Print init options to player on game init.
-     */
-    private static void printMainMenu() {
-        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
-        System.out.println("1. New Game");
-        System.out.println("2. Load");
-        System.out.println("3. Quit\n");
     }
 
     /**
@@ -200,7 +200,6 @@ public class Game {
                 int saveOption = Integer.parseInt(input) - 1;
                 try {
                     String save = saves.get(saveOption);
-                    System.out.println("Loading...\n");
 
                     // Get save file
                     BufferedReader br = new BufferedReader(new FileReader(save));
@@ -209,6 +208,8 @@ public class Game {
                     // Load player data
                     parsePlayer(jGame);
                     parseScene(jGame);
+                    parseCurrScene(jGame);
+
                     clearTerminal();
                     loadScanner.close();
                     break;
@@ -268,6 +269,17 @@ public class Game {
         HashMap<String, Scene> scenes = new HashMap<>();
         scenes.putAll(jScenes);
         gameScenes = scenes;
+    }
+
+    /**
+     * Parses a JSON object to get the current scene the player is in from
+     * a JSON file, either a save or a template chapter file.
+     * 
+     * @param jFile
+     * @throws Exception
+     */
+    private static void parseCurrScene(JSONObject jFile) throws Exception {
+        currScene = (String) jFile.get("currScene");
     }
 
     /**
