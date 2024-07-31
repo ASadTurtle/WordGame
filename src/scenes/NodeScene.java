@@ -29,7 +29,7 @@ public class NodeScene extends Scene {
      * @param branches
      * @param event
      */
-    public NodeScene(String index, ArrayList<String> lines, ArrayList<Branch> branches, Optional<Event> event) {
+    public NodeScene(String index, ArrayList<String> lines, Optional<Event> event, ArrayList<Branch> branches) {
         super(index, lines, event);
         this.branches = branches;
     }
