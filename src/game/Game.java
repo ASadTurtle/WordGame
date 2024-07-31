@@ -7,12 +7,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
+import events.Event;
+import events.GetPerkEvent;
+import events.GetStatusEvent;
+import scenes.Branch;
+import scenes.LeafScene;
+import scenes.NodeScene;
 import scenes.Scene;
 
 /**
@@ -33,15 +40,16 @@ import scenes.Scene;
  */
 public class Game {
     private static Player player;
-    private static HashMap<String, Scene> gameScenes;
+    private static HashMap<String, Scene> scenes = new HashMap<>();
     private static String currScene;
 
     public static void main(String[] args) throws Exception {
         // Initialise the game
         initGame();
 
+        // Debug message for game state
         System.out.println(player.getName());
-        System.out.println(gameScenes.values());
+        System.out.println(scenes.get(currScene).lines());
         System.out.println(currScene);
     }
 
@@ -208,15 +216,18 @@ public class Game {
 
                     // Load player data
                     parsePlayer(jGame);
-                    parseScene(jGame);
+                    parseScenes(jGame);
                     parseCurrScene(jGame);
 
                     clearTerminal();
                     loadScanner.close();
                     break;
 
-                } catch (IndexOutOfBoundsException e) {
-                    throw e;
+                } catch (Exception e) {
+                    clearTerminal();
+                    printSaves(saves);
+                    System.err.println(e);
+                    continue;
                 }
             } catch (Exception e) {
                 clearTerminal();
@@ -265,11 +276,88 @@ public class Game {
      * @throws Exception
      */
     @SuppressWarnings("unchecked")
-    private static void parseScene(JSONObject jFile) throws Exception {
+    private static void parseScenes(JSONObject jFile) throws Exception {
         JSONObject jScenes = (JSONObject) jFile.get("scenes");
-        HashMap<String, Scene> scenes = new HashMap<>();
-        scenes.putAll(jScenes);
-        gameScenes = scenes;
+        jScenes.forEach((key, jScene) -> {
+            Scene scene = parseScene((String) key, (JSONObject) jScene);
+            scenes.put((String) key, scene);
+        });
+    }
+
+    /**
+     * Parses a single JSONObject scene into a Scene java object. Called by
+     * parseScenes for each JSON scene in the file it reads.
+     * 
+     * @param jScene
+     */
+    private static Scene parseScene(String index, JSONObject jScene) {
+        // Get the scene type
+        String sceneType = (String) jScene.get("sceneType");
+
+        // Get common scene fields
+        ArrayList<String> lines = parseListStr(jScene, "lines");
+        Optional<Event> event = parseEvent(jScene);
+
+        // Get additional fields based on type
+        if (sceneType.matches("leaf")) {
+            String root = (String) jScene.get("root");
+            String nextScene = (String) jScene.get("nextScene");
+            return new LeafScene(index, lines, event, root, nextScene);
+        }
+
+        if (sceneType.matches("node")) {
+            ArrayList<Branch> branches = parseBranches(jScene);
+            return new NodeScene(index, lines, event, branches);
+        }
+        return null;
+    }
+
+    /**
+     * Parses an Event from a JSON scene or branch.
+     * 
+     * @return
+     */
+    private static Optional<Event> parseEvent(JSONObject j) {
+        Optional<JSONObject> jEvent = Optional.ofNullable((JSONObject) j.get("event"));
+
+        if (jEvent.isEmpty()) {
+            return Optional.empty();
+        }
+
+        String eventType = (String) jEvent.get().get("type");
+        String arg = (String) jEvent.get().get("arg");
+
+        // Return appropriate Event type
+        switch (eventType) {
+            case "getPerk":
+                return Optional.of(new GetPerkEvent(arg));
+            case "getStatus":
+                return Optional.of(new GetStatusEvent(arg));
+            default:
+                return Optional.empty();
+        }
+    }
+
+    /**
+     * Parses all branches from a JSON scene.
+     * 
+     * @param jScene
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private static ArrayList<Branch> parseBranches(JSONObject jScene) {
+        ArrayList<Branch> branches = new ArrayList<>();
+        JSONArray jBranches = (JSONArray) jScene.get("branches");
+        jBranches.forEach(rawBranch -> {
+            JSONObject jBranch = (JSONObject) rawBranch;
+            String bIndex = (String) jBranch.get("bIndex");
+            String bScene = (String) jBranch.get("bScene");
+            String prompt = (String) jBranch.get("prompt");
+            Optional<Event> event = parseEvent(jBranch);
+            branches.add(new Branch(bIndex, bScene, prompt, event));
+        });
+
+        return branches;
     }
 
     /**
@@ -293,9 +381,9 @@ public class Game {
      * @return
      */
     @SuppressWarnings("unchecked")
-    private static List<String> parseListStr(JSONObject j, String key) {
+    private static ArrayList<String> parseListStr(JSONObject j, String key) {
         JSONArray jObject = (JSONArray) j.get(key);
-        List<String> list = new ArrayList<>();
+        ArrayList<String> list = new ArrayList<>();
         jObject.forEach(object -> {
             list.add((String) object);
         });
