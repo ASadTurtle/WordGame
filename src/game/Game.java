@@ -40,8 +40,9 @@ public class Game {
         // Initialise the game
         initGame();
 
-        // System.out.println(player.getName());
-        // System.out.println(gameScenes.values());
+        System.out.println(player.getName());
+        System.out.println(gameScenes.values());
+        System.out.println(currScene);
     }
 
     /**
@@ -68,8 +69,7 @@ public class Game {
             if (input.matches("[lL](oad)?") || input.matches("2")) {
                 clearTerminal();
                 printMainMenu();
-                boolean loadedSave = loadSave();
-                if (loadedSave) {
+                if (loadSave()) {
                     initScanner.close();
                     break;
                 }
@@ -77,11 +77,11 @@ public class Game {
                 continue;
             }
 
-            // User quits
+            // Quit
             if (input.matches("[qQ](uit)?") || input.matches("3")) {
                 clearTerminal();
                 initScanner.close();
-                break;
+                System.exit(0);
             }
 
             // Print commands
@@ -160,7 +160,7 @@ public class Game {
             return false;
         }
 
-        // Print each valid save in save directory and add its filepath to array
+        // Add each valid saves filepath to array
         ArrayList<String> saves = new ArrayList<>();
         for (File file : savesDir.listFiles()) {
             if (file.getName().contains(".json")) {
@@ -178,10 +178,11 @@ public class Game {
             // Quit
             if (input.matches("[qQ](uit)?")) {
                 clearTerminal();
-                break;
+                // Leave immediately
+                System.exit(0);
             }
 
-            // Make Back command
+            // Back to main menu
             if (input.matches("[bB](ack)?")) {
                 clearTerminal();
                 return false;
