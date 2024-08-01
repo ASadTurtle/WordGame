@@ -42,6 +42,7 @@ public class Game {
     private static Player player;
     private static HashMap<String, Scene> scenes = new HashMap<>();
     private static String currScene;
+    private static Optional<String> nextChapter;
 
     public static void main(String[] args) throws Exception {
         // Initialise the game
@@ -51,6 +52,7 @@ public class Game {
         System.out.println(player.getName());
         System.out.println(scenes.get(currScene).lines());
         System.out.println(currScene);
+        System.out.println(nextChapter);
     }
 
     /**
@@ -68,15 +70,17 @@ public class Game {
             // Start a new game
             if (input.matches("[nN](ew [gG]ame)?") || input.matches("1")) {
                 clearTerminal();
+                if (newGame()) {
+                    initScanner.close();
+                    break;
+                }
                 printMainMenu();
-                initScanner.close();
-                break;
+                continue;
             }
 
             // Load save
             if (input.matches("[lL](oad)?") || input.matches("2")) {
                 clearTerminal();
-                printMainMenu();
                 if (loadSave()) {
                     initScanner.close();
                     break;
@@ -107,6 +111,95 @@ public class Game {
     }
 
     /**
+     * Initialises a new game from user input. Returns if a new game was
+     * successfully initialised.
+     * 
+     * @return
+     */
+    private static boolean newGame() throws Exception {
+        File gamesDir = new File("data");
+
+        if (gamesDir.listFiles().length == 0) {
+            System.out.println("There are no games available :(");
+            return false;
+        }
+
+        // Add each available game directory to array
+        ArrayList<String> games = new ArrayList<>();
+        for (File file : gamesDir.listFiles()) {
+            if (file.isDirectory()) {
+                games.add(file.getPath());
+            }
+        }
+
+        // Loop until user selects a game to play.
+        Scanner newGameScanner = new Scanner(System.in);
+        printGames(games);
+        while (true) {
+            String input = newGameScanner.nextLine();
+
+            // Quit
+            if (input.matches("[qQ](uit)?")) {
+                clearTerminal();
+                // Leave immediately
+                System.exit(0);
+            }
+
+            // Back to main menu
+            if (input.matches("[bB](ack)?")) {
+                clearTerminal();
+                return false;
+            }
+
+            // Print commands
+            if (input.matches("[hH](elp)?")) {
+                clearTerminal();
+                printGames(games);
+                logHelpNewGame();
+                continue;
+            }
+
+            // Attempt to start a game from user input
+            try {
+                int gameOption = Integer.parseInt(input) - 1;
+                try {
+                    String game = games.get(gameOption);
+
+                    // Get save file
+                    BufferedReader brPlayer = new BufferedReader(new FileReader(game + "\\playerDefault.json"));
+                    JSONObject jPlayer = (JSONObject) (new JSONParser().parse(brPlayer));
+                    BufferedReader brChapter = new BufferedReader(new FileReader(game + "\\chapter1.json"));
+                    JSONObject jChapter = (JSONObject) (new JSONParser().parse(brChapter));
+
+                    // Load player data
+                    parsePlayer(jPlayer);
+                    parseScenes(jChapter);
+                    parseCurrScene(jChapter);
+                    parseNextChapter(jChapter);
+
+                    clearTerminal();
+                    newGameScanner.close();
+                    break;
+
+                } catch (Exception e) {
+                    clearTerminal();
+                    printGames(games);
+                    System.err.println(e);
+                    continue;
+                }
+            } catch (Exception e) {
+                clearTerminal();
+                printGames(games);
+                System.out.println("Invalid option. Use [h]elp for a list of commands\n");
+                continue;
+            }
+        }
+
+        return true;
+
+    }
+
+    /**
      * Takes user input to load from a selection of savefiles. Returns boolean
      * for successful load.
      * 
@@ -131,7 +224,6 @@ public class Game {
 
         // Loop until user selects save to load from
         Scanner loadScanner = new Scanner(System.in);
-        clearTerminal();
         printSaves(saves);
         while (true) {
             String input = loadScanner.nextLine();
@@ -171,6 +263,7 @@ public class Game {
                     parsePlayer(jGame);
                     parseScenes(jGame);
                     parseCurrScene(jGame);
+                    parseNextChapter(jGame);
 
                     clearTerminal();
                     loadScanner.close();
@@ -226,6 +319,17 @@ public class Game {
     }
 
     /**
+     * Print commands for new game menu
+     */
+    private static void logHelpNewGame() {
+        System.out.println("<game_number>   - start game");
+        System.out.println("<[b]ack>        - return to main menu");
+        System.out.println("<[q]uit>        - quit the game");
+        System.out.println("<[h]elp>        - print this message");
+        System.out.println();
+    }
+
+    /**
      * Helper function, clears the terminal.
      * 
      * @throws IOException
@@ -251,6 +355,17 @@ public class Game {
         for (String save : saves) {
             String saveName = save.replace(".json", "").replace("saves\\", "");
             System.out.printf("%d. " + saveName + "\n", i);
+            i++;
+        }
+        System.out.println();
+    }
+
+    private static void printGames(ArrayList<String> games) {
+        System.out.println("SELECT A GAME:");
+        int i = 1;
+        for (String game : games) {
+            String gameName = game.replace("_", " ").replace("data\\", "");
+            System.out.printf("%d. " + gameName + "\n", i);
             i++;
         }
         System.out.println();
@@ -366,14 +481,24 @@ public class Game {
     }
 
     /**
-     * Parses a JSON object to get the current scene the player is in from
-     * a JSON file, either a save or a template chapter file.
+     * Parses a JSON file to get the current scene the player is in.
      * 
      * @param jFile
      * @throws Exception
      */
     private static void parseCurrScene(JSONObject jFile) throws Exception {
         currScene = (String) jFile.get("currScene");
+    }
+
+    /**
+     * Parses a JSON file to get the next chapter the player will start when
+     * this one has concluded.
+     * 
+     * @param jFile
+     * @throws Exception
+     */
+    private static void parseNextChapter(JSONObject jFile) throws Exception {
+        nextChapter = Optional.ofNullable((String) jFile.get("nextChapter"));
     }
 
     /**
