@@ -43,10 +43,10 @@ public class Game {
 
         // Debug message for game state
         System.out.println("Player name: " + player.getName());
-        System.out.println("Lines in this scene " + scenes.get(currScene).lines());
-        System.out.println("The current scene is " + currScene);
+        System.out.println("Lines in this scene: " + scenes.get(currScene).lines());
+        System.out.println("The current scene is: " + currScene);
         System.out.println("The next chapter is: " + nextChapter);
-        System.out.println("Game name : " + gameName);
+        System.out.println("Game name: " + gameName);
     }
 
     /**
