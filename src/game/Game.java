@@ -297,17 +297,17 @@ public class Game {
         // Get common scene fields
         ArrayList<String> lines = parseListStr(jScene, "lines");
         Optional<Event> event = parseEvent(jScene);
+        ArrayList<String> roots = parseListStr(jScene, "roots");
 
         // Get additional fields based on type
         if (sceneType.matches("leaf")) {
-            String root = (String) jScene.get("root");
             String nextScene = (String) jScene.get("nextScene");
-            return new LeafScene(index, lines, event, root, nextScene);
+            return new LeafScene(index, lines, roots, event, nextScene);
         }
 
         if (sceneType.matches("node")) {
             ArrayList<Branch> branches = parseBranches(jScene);
-            return new NodeScene(index, lines, event, branches);
+            return new NodeScene(index, lines, roots, event, branches);
         }
         return null;
     }

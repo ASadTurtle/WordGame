@@ -20,6 +20,7 @@ import game.Player;
 public abstract class Scene {
     private String index;
     private ArrayList<String> lines;
+    private ArrayList<String> roots;
     private Optional<Event> event;
 
     /**
@@ -30,9 +31,10 @@ public abstract class Scene {
      * @param lines
      * @param event
      */
-    public Scene(String index, ArrayList<String> lines, Optional<Event> event) {
+    public Scene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event) {
         this.index = index;
         this.lines = lines;
+        this.roots = roots;
         this.event = event;
     }
 
@@ -48,6 +50,10 @@ public abstract class Scene {
      */
     public ArrayList<String> lines() {
         return this.lines;
+    }
+
+    public ArrayList<String> roots() {
+        return this.roots;
     }
 
     /**

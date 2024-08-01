@@ -14,17 +14,12 @@ import events.Event;
  * so as to not repeat previously visited scenes.
  */
 public class LeafScene extends Scene {
-    private String root;
     private String nextScene;
 
-    public LeafScene(String index, ArrayList<String> lines, Optional<Event> event, String root, String nextScene) {
-        super(index, lines, event);
-        this.root = root;
+    public LeafScene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event,
+            String nextScene) {
+        super(index, lines, roots, event);
         this.nextScene = nextScene;
-    }
-
-    public String root() {
-        return this.root;
     }
 
     public String nextScene() {

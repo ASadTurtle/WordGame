@@ -19,8 +19,6 @@ import events.Event;
 public class NodeScene extends Scene {
     private ArrayList<Branch> branches;
 
-    // Needs to remove a branch when given its index
-
     /**
      * This constructor fills all fields of scene.
      * 
@@ -29,8 +27,9 @@ public class NodeScene extends Scene {
      * @param branches
      * @param event
      */
-    public NodeScene(String index, ArrayList<String> lines, Optional<Event> event, ArrayList<Branch> branches) {
-        super(index, lines, event);
+    public NodeScene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event,
+            ArrayList<Branch> branches) {
+        super(index, lines, roots, event);
         this.branches = branches;
     }
 
