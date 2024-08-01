@@ -64,16 +64,23 @@ game settings to the engine prior to starting it, for things such as:
 - Credits
 
 A saved game is stored as a JSON file, containing a list of scenes, the players
-current state, and an index for the scene the player is currently in.
+current state, an index for the scene the player is currently in, an index
+for the next chapter.
 
 ## JSON format specifications
+
+### `gameName`
+
+This field is a string, which informs the game which data folder the scenes are
+being loaded from. This is so that when one chapter ends, the game can then load
+the next chapter from the correct folder under `/data`.
 
 ### `nextChapter`
 
 This field is a string, which informs the game which chapter the player will
-start after this one has concluded. It is not a required field, though if
-the game does not detect this field in a file, it will set the default value
-to 0, and will assume this chapter is the final of the game.
+start after this one has concluded. It is not a required field, though this is
+an optional field. If the field is not found the game will assume this chapter
+is the final of the game.
 
 ### `currScene`
 
