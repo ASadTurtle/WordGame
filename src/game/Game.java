@@ -43,16 +43,18 @@ public class Game {
     private static HashMap<String, Scene> scenes = new HashMap<>();
     private static String currScene;
     private static Optional<String> nextChapter;
+    private static String gameName;
 
     public static void main(String[] args) throws Exception {
         // Initialise the game
         initGame();
 
         // Debug message for game state
-        System.out.println(player.getName());
-        System.out.println(scenes.get(currScene).lines());
-        System.out.println(currScene);
-        System.out.println(nextChapter);
+        System.out.println("Player name: " + player.getName());
+        System.out.println("Lines in this scene " + scenes.get(currScene).lines());
+        System.out.println("The current scene is " + currScene);
+        System.out.println("The next chapter is: " + nextChapter);
+        System.out.println("Game name : " + gameName);
     }
 
     /**
@@ -176,6 +178,7 @@ public class Game {
                     parseScenes(jChapter);
                     parseCurrScene(jChapter);
                     parseNextChapter(jChapter);
+                    gameName = game.replace("data\\", "");
 
                     clearTerminal();
                     newGameScanner.close();
@@ -264,6 +267,7 @@ public class Game {
                     parseScenes(jGame);
                     parseCurrScene(jGame);
                     parseNextChapter(jGame);
+                    parseGameName(jGame);
 
                     clearTerminal();
                     loadScanner.close();
@@ -499,6 +503,16 @@ public class Game {
      */
     private static void parseNextChapter(JSONObject jFile) throws Exception {
         nextChapter = Optional.ofNullable((String) jFile.get("nextChapter"));
+    }
+
+    /**
+     * Parses the game name from the save file.
+     * 
+     * @param jFile
+     * @throws Exception
+     */
+    private static void parseGameName(JSONObject jFile) throws Exception {
+        gameName = (String) jFile.get("gameName");
     }
 
     /**
