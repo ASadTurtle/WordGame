@@ -38,17 +38,173 @@ found this repo in the first place.
 
 When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Dwarven Saga'***
 
-## Scene libraries
+## Scene dictionaries
 
 Scenes and player info are stored in json files under the chapters directory.
-Each chapter stores . Each chapter stores a dictionary of scenes. The players
-current save is stored in a seperate json file, along with information about the player.
-This includes their perks, statuses, items, and name. When the player creates a
-new save, they create a copy of the chapter.json file, which can be overwritten.
+Each chapter stores a dictionary of scenes. The players current save is stored
+in a seperate json file, along with information about the player. This includes
+their perks, statuses, items, and name. When the player creates a new save,
+they create a copy of the chapter.json file, which can be overwritten.
 This is to prevent save corruption, such as players not being able to traverse
 previous branches in later saves.
 
-### Credits
+Scene libraries are essentially *the game*. Each game is stored as a directory
+under the `./data` directory. The name of the directory denotes the name of the
+game the player may play, written in snake case (i.e. '***The Curse ofSigfried***'
+is stored n directory `./data/The_Curse_of_Sigfried`) so the engine may print
+the name as the author intends.
+
+Within each of these directories, there one or many `chapter*.json` files, each
+being a JSON dictionary of the chapters of the game, containing multiple scenes.
+As of writing this I am considering a game config.json file to provide the
+game settings to the engine prior to starting it, for things such as:
+
+- Game startup message
+- Declare final chapter
+- Credits
+
+A saved game is stored as a JSON file, containing a list of scenes, the players
+current state, and an index for the scene the player is currently in.
+
+## JSON format specifications
+
+### `currScene`
+
+This field is simply a string, which should match the key of a scene in the
+`scenes` field of the save. If it does not match a scenes key then the game will
+not be able to load the last scene the player was in, and behaviour will be
+unpredictable.
+
+```json
+"currScene": "1.1"
+```
+
+### `scenes`
+
+This field stores all scenes as a dictionary of JSON objects. Each object in the
+array is a JSON representation of a `Scene` class object. The structure of these
+objects is implemented in `src/scenes`. Each scene has also neeeds a key, which
+corresponds to the scenes index in the chapter. The key is a string, and its format
+can be decided by the author. I choose to organise my scenes by a numbered index
+such as [`1.1`, `1.1.1`, `1.1.2`, etc.]. The following fields are required for a
+JSON representation of a scene:
+
+- `lines: String[]` - A list of strings, where each is a line to be printed to
+the terminal. This is the message that will be printed at the start of a scene
+to the player. This field can be an empty list if you wish.
+- `sceneType: String` - A scene can have multiple types, and
+their behaviours are documented in another section. For the game to identify
+which types the scenes have, each JSON object in the `scenes` array has a
+field `sceneType`, which **must** match the type of some scene from the engine.
+The parser should handle loading and saving a scenes type on its own, but it
+is suggested you do not alter the type of a scene in the save file.
+- `event: Event` - This field is **optional**. It represents a JSON Event object.
+object.
+- `roots: String[]` - This list holds all the indices of scenes that directly
+lead to this scene. When this scene is resolved, the root scenes should no
+longer have a branch that leads to this scene. The roots list may be empty, in
+the case of the first scene the player enters.
+
+```json
+"scenes" : {
+    "1.1": {
+            "lines": [
+                "You only remember your name. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
+            ],
+            "sceneType": "node", 
+            "roots": [],
+            ...
+        },
+    ...
+}
+```
+
+The following fields are required for `node` type scenes:
+
+- `branches: Branch[]` - A list of JSON Branch objects.
+
+```json
+{
+    "1.1.1": {
+            "lines": ["You slowly draw your attention inward, using your will to focus past the pain and assess your body."],
+            "sceneType": "node",
+            "roots": ["1.1"],
+            "branches": [
+                {"bIndex": "1", "bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
+                {"bIndex": "2", "bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "getPerk", "arg": "Athletic"}},
+                {"bIndex": "3", "bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this.", "event": {"type": "getPerk", "arg": "Strong"}},
+                {"bIndex": "4", "bScene": "1.1.1.0", "prompt": "Nothing appears out of the ordinary."},
+                {"bIndex": "5", "bScene": "1.1.1.1", "prompt": "Something feels missing..."}
+            ]
+    },
+    ...
+}
+```
+
+The following fields are required for `leaf` type scenes:
+
+- `nextScene: String` - index of the next scene after this leaf scene. **must**
+correspond to an existing scene in the library.
+
+### `event`
+
+An event object consists of the following fields:
+
+- `type: String` - The type of the event. Similar to `sceneType` it is important
+this field corresponds to a valid Event class from the `src/events` package.
+This determines the behaviour of the event when run in the game.
+- `arg: String` - The argument of the event, usually a perk, status, or item.
+
+```json
+"event": {"type": "getPerk", "arg": "Rebuilt"}
+```
+
+### `branch`
+
+A branch object consists of the following fields:
+
+- `bIndex: String` - index for the branch, like scenes format is decided
+by the user. The player will need to input this index to select the branch in
+the game. (E.g. if branch has index '2', and player enters '2', branch '2' should
+be selected. if it had index 'a', then entering 'a' should select it). It is
+designated as a string for flexibility, but I personally choose index to be an
+integer number. They could instead be keywords.
+- `bScene: String` - index referencing a scene this branch is designated
+to.
+- `prompt: String` - the text which is printed to the player for this
+string. (e.g. what choice the player is making in this branch)
+- `event: Event` - This field is **optional**. It represents a JSON Event object.
+
+```json
+{"bIndex": "1", "bScene": "1.1.1", "prompt": "Assess my wounds"},
+{"bIndex": "2", "bScene": "1.1.2", "prompt": "Try to stand"},
+{"bIndex": "3", "bScene": "1.1.3", "prompt": "Try to remember"},
+{"bIndex": "4", "bScene": "1.1.4", "prompt": "Listen"}
+```
+
+### `player`
+
+This field stores a JSON object of the player with the following fields.
+
+- `name: String` - The name of the player.
+- `perks: String[]` - a list of strings, each representing a perk
+- `items: String[]` - a list of strings, each representing an item
+- `statuses: String[]` - a list of strings, each representing a status
+
+A game may choose to have a default start for the player when starting a new
+game, with a `playerDefault.json` in its data directory. Otherwise all fields
+will be interpreted as empty when a new game starts.
+
+```json
+"player": {
+        "name": "Mikhael",
+        "perks": ["Athletic"],
+        "items": ["Axe"],
+        "statuses": ["Poisoned"]
+    }
+```
+
+## Credits
 
 - Christian Politis: Teaching me to use Git like someone who has seen a computer
 before. General advice for maintaining this project for my portfolio. My
@@ -58,7 +214,7 @@ this project.
 - Dad: Nodding while I explain my project, discussing old CYOA books and games
 he used to play. Advising to touch grass.
 
-### Personal notes
+## Personal notes
 
 Ideas for chapter storage:
 
