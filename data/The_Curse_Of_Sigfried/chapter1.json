@@ -2,7 +2,7 @@
     "scenes": {
         "1.1": {
             "lines": [
-                "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
+                "You only remember your name. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
             ],
             "sceneType": "node", 
             "roots": [],
