@@ -107,53 +107,6 @@ public class Game {
     }
 
     /**
-     * Prints commands for main menu
-     */
-    private static void logHelpInit() {
-        System.out.println("<[n]ew game>    - start a new game");
-        System.out.println("<[l]oad>        - load an existing save");
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println();
-    }
-
-    /**
-     * Print init options to player on game init.
-     */
-    private static void printMainMenu() {
-        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
-        System.out.println("1. New Game");
-        System.out.println("2. Load");
-        System.out.println("3. Quit\n");
-    }
-
-    /**
-     * Prints commands for load menu
-     */
-    private static void logHelpLoad() {
-        System.out.println("<save_number>   - load save");
-        System.out.println("<[b]ack>        - return to main menu");
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println();
-    }
-
-    /**
-     * Helper function, clears the terminal.
-     * 
-     * @throws IOException
-     * @throws InterruptedException
-     */
-    @SuppressWarnings("deprecation")
-    private static void clearTerminal() throws IOException, InterruptedException {
-        final String os = System.getProperty("os.name");
-        if (os.contains("Windows"))
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-        else
-            Runtime.getRuntime().exec("clear");
-    }
-
-    /**
      * Takes user input to load from a selection of savefiles. Returns boolean
      * for successful load.
      * 
@@ -240,6 +193,58 @@ public class Game {
         return true;
     }
 
+    /**
+     * Print init options to player on game init.
+     */
+    private static void printMainMenu() {
+        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
+        System.out.println("1. New Game");
+        System.out.println("2. Load");
+        System.out.println("3. Quit\n");
+    }
+
+    /**
+     * Prints commands for main menu
+     */
+    private static void logHelpInit() {
+        System.out.println("<[n]ew game>    - start a new game");
+        System.out.println("<[l]oad>        - load an existing save");
+        System.out.println("<[q]uit>        - quit the game");
+        System.out.println("<[h]elp>        - print this message");
+        System.out.println();
+    }
+
+    /**
+     * Prints commands for load menu
+     */
+    private static void logHelpLoad() {
+        System.out.println("<save_number>   - load save");
+        System.out.println("<[b]ack>        - return to main menu");
+        System.out.println("<[q]uit>        - quit the game");
+        System.out.println("<[h]elp>        - print this message");
+        System.out.println();
+    }
+
+    /**
+     * Helper function, clears the terminal.
+     * 
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    @SuppressWarnings("deprecation")
+    private static void clearTerminal() throws IOException, InterruptedException {
+        final String os = System.getProperty("os.name");
+        if (os.contains("Windows"))
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        else
+            Runtime.getRuntime().exec("clear");
+    }
+
+    /**
+     * Prints all valid save files in the `saves` directory.
+     * 
+     * @param saves
+     */
     private static void printSaves(ArrayList<String> saves) {
         System.out.println("SAVES:");
         int i = 1;
