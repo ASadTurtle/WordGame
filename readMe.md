@@ -68,6 +68,13 @@ current state, and an index for the scene the player is currently in.
 
 ## JSON format specifications
 
+### `nextChapter`
+
+This field is a string, which informs the game which chapter the player will
+start after this one has concluded. It is not a required field, though if
+the game does not detect this field in a file, it will set the default value
+to 0, and will assume this chapter is the final of the game.
+
 ### `currScene`
 
 This field is simply a string, which should match the key of a scene in the
