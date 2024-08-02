@@ -51,8 +51,9 @@ public class GameParser {
     public HashMap<String, Scene> parseScenes() {
         JSONObject jScenes = jFile.getJSONObject("scenes");
         HashMap<String, Scene> scenes = new HashMap<>();
-        jScenes.toMap().forEach((key, jScene) -> {
-            Scene scene = parseScene(key, (JSONObject) jScene);
+        jScenes.keySet().forEach(key -> {
+            JSONObject jScene = jScenes.getJSONObject(key);
+            Scene scene = parseScene(key, jScene);
             scenes.put(key, scene);
         });
 
@@ -95,7 +96,7 @@ public class GameParser {
      * @return
      */
     public Optional<Event> parseEvent(JSONObject j) {
-        Optional<JSONObject> jEvent = Optional.ofNullable(j.getJSONObject("event"));
+        Optional<JSONObject> jEvent = Optional.ofNullable(j.optJSONObject("event"));
 
         if (jEvent.isEmpty()) {
             return Optional.empty();
@@ -149,7 +150,7 @@ public class GameParser {
      * 
      */
     public Optional<String> parseNextChapter() {
-        return Optional.ofNullable(jFile.getString("nextChapter"));
+        return Optional.ofNullable(jFile.optString("nextChapter"));
     }
 
     /**
