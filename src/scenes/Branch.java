@@ -11,20 +11,14 @@ import game.Player;
  * optionally an event.
  */
 public class Branch {
-    private String index;
     private String nextScene;
     private String prompt;
     private Optional<Event> event;
 
-    public Branch(String index, String nextScene, String prompt, Optional<Event> event) {
-        this.index = index;
+    public Branch(String nextScene, String prompt, Optional<Event> event) {
         this.nextScene = nextScene;
         this.prompt = prompt;
         this.event = event;
-    }
-
-    public String index() {
-        return index;
     }
 
     public String nextScene() {

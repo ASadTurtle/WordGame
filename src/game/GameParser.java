@@ -117,11 +117,10 @@ public class GameParser {
         JSONArray jBranches = (JSONArray) jScene.get("branches");
         jBranches.forEach(rawBranch -> {
             JSONObject jBranch = (JSONObject) rawBranch;
-            String bIndex = (String) jBranch.get("bIndex");
             String bScene = (String) jBranch.get("bScene");
             String prompt = (String) jBranch.get("prompt");
             Optional<Event> event = parseEvent(jBranch);
-            branches.add(new Branch(bIndex, bScene, prompt, event));
+            branches.add(new Branch(bScene, prompt, event));
         });
 
         return branches;
