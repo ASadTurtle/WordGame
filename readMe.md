@@ -144,11 +144,11 @@ The following fields are required for `node` type scenes:
             "sceneType": "node",
             "roots": ["1.1"],
             "branches": [
-                {"bIndex": "1", "bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
-                {"bIndex": "2", "bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "getPerk", "arg": "Athletic"}},
-                {"bIndex": "3", "bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this.", "event": {"type": "getPerk", "arg": "Strong"}},
-                {"bIndex": "4", "bScene": "1.1.1.0", "prompt": "Nothing appears out of the ordinary."},
-                {"bIndex": "5", "bScene": "1.1.1.1", "prompt": "Something feels missing..."}
+                {"bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
+                {"bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "getPerk", "arg": "Athletic"}},
+                {"bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this.", "event": {"type": "getPerk", "arg": "Strong"}},
+                {"bScene": "1.1.1.0", "prompt": "Nothing appears out of the ordinary."},
+                {"bScene": "1.1.1.1", "prompt": "Something feels missing..."}
             ]
     },
     ...
@@ -177,12 +177,6 @@ This determines the behaviour of the event when run in the game.
 
 A branch object consists of the following fields:
 
-- `bIndex: String` - index for the branch, like scenes format is decided
-by the user. The player will need to input this index to select the branch in
-the game. (E.g. if branch has index '2', and player enters '2', branch '2' should
-be selected. if it had index 'a', then entering 'a' should select it). It is
-designated as a string for flexibility, but I personally choose index to be an
-integer number. They could instead be keywords.
 - `bScene: String` - index referencing a scene this branch is designated
 to.
 - `prompt: String` - the text which is printed to the player for this
@@ -190,10 +184,10 @@ string. (e.g. what choice the player is making in this branch)
 - `event: Event` - This field is **optional**. It represents a JSON Event object.
 
 ```json
-{"bIndex": "1", "bScene": "1.1.1", "prompt": "Assess my wounds"},
-{"bIndex": "2", "bScene": "1.1.2", "prompt": "Try to stand"},
-{"bIndex": "3", "bScene": "1.1.3", "prompt": "Try to remember"},
-{"bIndex": "4", "bScene": "1.1.4", "prompt": "Listen"}
+{"bScene": "1.1.1", "prompt": "Assess my wounds"},
+{"bScene": "1.1.2", "prompt": "Try to stand"},
+{"bScene": "1.1.3", "prompt": "Try to remember"},
+{"bScene": "1.1.4", "prompt": "Listen"}
 ```
 
 ### `player`
