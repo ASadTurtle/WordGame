@@ -1,16 +1,11 @@
 package game;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Scanner;
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 
 import scenes.Scene;
 
@@ -159,18 +154,15 @@ public class Game {
                 try {
                     String game = games.get(gameOption);
 
-                    // Get save file
-                    BufferedReader brPlayer = new BufferedReader(new FileReader(game + "\\playerDefault.json"));
-                    JSONObject jPlayer = (JSONObject) (new JSONParser().parse(brPlayer));
-                    BufferedReader brChapter = new BufferedReader(new FileReader(game + "\\chapter1.json"));
-                    JSONObject jChapter = (JSONObject) (new JSONParser().parse(brChapter));
+                    // Load game data from default player file
+                    GameParser playerParser = new GameParser(game + "\\playerDefault.json");
+                    player = playerParser.parsePlayer();
 
-                    // Parse game data from default files
-                    GameParser gp = new GameParser();
-                    player = gp.parsePlayer(jPlayer);
-                    scenes = gp.parseScenes(jChapter);
-                    currScene = gp.parseCurrScene(jChapter);
-                    nextChapter = gp.parseNextChapter(jChapter);
+                    // Load game data from chapter 1
+                    GameParser chapterParser = new GameParser(game + "\\chapter1.json");
+                    scenes = chapterParser.parseScenes();
+                    currScene = chapterParser.parseCurrScene();
+                    nextChapter = chapterParser.parseNextChapter();
                     gameName = game.replace("data\\", "");
 
                     clearTerminal();
@@ -251,17 +243,13 @@ public class Game {
                 try {
                     String save = saves.get(saveOption);
 
-                    // Get save file
-                    BufferedReader br = new BufferedReader(new FileReader(save));
-                    JSONObject jGame = (JSONObject) (new JSONParser().parse(br));
-
-                    // Load player data
-                    GameParser gp = new GameParser();
-                    player = gp.parsePlayer(jGame);
-                    scenes = gp.parseScenes(jGame);
-                    currScene = gp.parseCurrScene(jGame);
-                    nextChapter = gp.parseNextChapter(jGame);
-                    gameName = gp.parseGameName(jGame);
+                    // Load Game data from save file
+                    GameParser gp = new GameParser(save);
+                    player = gp.parsePlayer();
+                    scenes = gp.parseScenes();
+                    currScene = gp.parseCurrScene();
+                    nextChapter = gp.parseNextChapter();
+                    gameName = gp.parseGameName();
 
                     clearTerminal();
                     loadScanner.close();
