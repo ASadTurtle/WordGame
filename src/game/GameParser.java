@@ -1,7 +1,11 @@
 package game;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
@@ -15,16 +19,23 @@ import scenes.NodeScene;
 import scenes.Scene;
 
 public class GameParser {
+
+    JSONObject jFile;
+
+    public GameParser(String fileName) throws FileNotFoundException {
+        jFile = new JSONObject(new JSONTokener(new FileReader(fileName)));
+    }
+
     /**
      * Parses a JSONObject from a player record into a Player object for the game
      * to use. The argument is the entire JSON object from the loaded file.
      * 
      * @param jFile
      */
-    public Player parsePlayer(JSONObject jFile) throws Exception {
+    public Player parsePlayer() {
 
-        JSONObject jPlayer = (JSONObject) jFile.get("player");
-        String name = (String) jPlayer.get("name");
+        JSONObject jPlayer = jFile.getJSONObject("player");
+        String name = jPlayer.getString("name");
         ArrayList<String> perks = parseListStr(jPlayer, "perks");
         ArrayList<String> items = parseListStr(jPlayer, "items");
         ArrayList<String> statuses = parseListStr(jPlayer, "statuses");
@@ -36,16 +47,14 @@ public class GameParser {
      * Parses a JSONObject containing all scenes in the current game, into a
      * Hashmap of scenes for the game to store and use over the games runtime.
      * 
-     * @param jFile
-     * @throws Exception
      */
-    @SuppressWarnings("unchecked")
-    public HashMap<String, Scene> parseScenes(JSONObject jFile) throws Exception {
-        JSONObject jScenes = (JSONObject) jFile.get("scenes");
+    public HashMap<String, Scene> parseScenes() {
+        JSONObject jScenes = jFile.getJSONObject("scenes");
         HashMap<String, Scene> scenes = new HashMap<>();
-        jScenes.forEach((key, jScene) -> {
-            Scene scene = parseScene((String) key, (JSONObject) jScene);
-            scenes.put((String) key, scene);
+        jScenes.keySet().forEach(key -> {
+            JSONObject jScene = jScenes.getJSONObject(key);
+            Scene scene = parseScene(key, jScene);
+            scenes.put(key, scene);
         });
 
         return scenes;
@@ -55,11 +64,12 @@ public class GameParser {
      * Parses a single JSONObject scene into a Scene java object. Called by
      * parseScenes for each JSON scene in the file it reads.
      * 
+     * @param index
      * @param jScene
      */
     public Scene parseScene(String index, JSONObject jScene) {
         // Get the scene type
-        String sceneType = (String) jScene.get("sceneType");
+        String sceneType = jScene.getString("sceneType");
 
         // Get common scene fields
         ArrayList<String> lines = parseListStr(jScene, "lines");
@@ -68,7 +78,7 @@ public class GameParser {
 
         // Get additional fields based on type
         if (sceneType.matches("leaf")) {
-            String nextScene = (String) jScene.get("nextScene");
+            String nextScene = jScene.getString("nextScene");
             return new LeafScene(index, lines, roots, event, nextScene);
         }
 
@@ -82,17 +92,18 @@ public class GameParser {
     /**
      * Parses an Event from a JSON scene or branch.
      * 
+     * @param j
      * @return
      */
     public Optional<Event> parseEvent(JSONObject j) {
-        Optional<JSONObject> jEvent = Optional.ofNullable((JSONObject) j.get("event"));
+        Optional<JSONObject> jEvent = Optional.ofNullable(j.optJSONObject("event"));
 
         if (jEvent.isEmpty()) {
             return Optional.empty();
         }
 
-        String eventType = (String) jEvent.get().get("type");
-        String arg = (String) jEvent.get().get("arg");
+        String eventType = jEvent.get().getString("type");
+        String arg = jEvent.get().getString("arg");
 
         // Return appropriate Event type
         switch (eventType) {
@@ -111,14 +122,13 @@ public class GameParser {
      * @param jScene
      * @return
      */
-    @SuppressWarnings("unchecked")
     public ArrayList<Branch> parseBranches(JSONObject jScene) {
         ArrayList<Branch> branches = new ArrayList<>();
-        JSONArray jBranches = (JSONArray) jScene.get("branches");
+        JSONArray jBranches = jScene.getJSONArray("branches");
         jBranches.forEach(rawBranch -> {
             JSONObject jBranch = (JSONObject) rawBranch;
-            String bScene = (String) jBranch.get("bScene");
-            String prompt = (String) jBranch.get("prompt");
+            String bScene = jBranch.getString("bScene");
+            String prompt = jBranch.getString("prompt");
             Optional<Event> event = parseEvent(jBranch);
             branches.add(new Branch(bScene, prompt, event));
         });
@@ -129,32 +139,26 @@ public class GameParser {
     /**
      * Parses a JSON file to get the current scene the player is in.
      * 
-     * @param jFile
-     * @throws Exception
      */
-    public String parseCurrScene(JSONObject jFile) throws Exception {
-        return (String) jFile.get("currScene");
+    public String parseCurrScene() {
+        return jFile.getString("currScene");
     }
 
     /**
      * Parses a JSON file to get the next chapter the player will start when
      * this one has concluded.
      * 
-     * @param jFile
-     * @throws Exception
      */
-    public Optional<String> parseNextChapter(JSONObject jFile) throws Exception {
-        return Optional.ofNullable((String) jFile.get("nextChapter"));
+    public Optional<String> parseNextChapter() {
+        return Optional.ofNullable(jFile.optString("nextChapter"));
     }
 
     /**
      * Parses the game name from the save file.
      * 
-     * @param jFile
-     * @throws Exception
      */
-    public String parseGameName(JSONObject jFile) throws Exception {
-        return (String) jFile.get("gameName");
+    public String parseGameName() {
+        return jFile.getString("gameName");
     }
 
     /**
@@ -166,7 +170,6 @@ public class GameParser {
      * @param key
      * @return
      */
-    @SuppressWarnings("unchecked")
     public ArrayList<String> parseListStr(JSONObject j, String key) {
         JSONArray jObject = (JSONArray) j.get(key);
         ArrayList<String> list = new ArrayList<>();
