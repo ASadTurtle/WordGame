@@ -176,7 +176,10 @@ public class GameParser {
      * @return Optionally, the identity of the next chapter
      */
     public Optional<String> parseNextChapter() {
-        return Optional.ofNullable(jFile.optString("nextChapter"));
+        String nextChapter = jFile.optString("nextChapter");
+        if (!nextChapter.isEmpty())
+            return Optional.of(nextChapter);
+        return Optional.empty();
     }
 
     /**
