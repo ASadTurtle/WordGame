@@ -1,6 +1,7 @@
 package game;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -18,27 +19,49 @@ import scenes.LeafScene;
 import scenes.NodeScene;
 import scenes.Scene;
 
+/**
+ * This class is responsible for parsing the JSON file with the given filename,
+ * and returning the appropriate Game Objects for the TextGame to use.
+ * 
+ * @author Ahmed El-Sayed
+ */
 public class GameParser {
 
+    // File parsed to JSON Object
     JSONObject jFile;
 
+    /**
+     * Given the filename of a JSON data file or JSON save file, creates a
+     * GameParser to parse game data from that file.
+     * 
+     * @param fileName The JSON file we are parsing for game data
+     * @throws FileNotFoundException
+     */
     public GameParser(String fileName) throws FileNotFoundException {
         jFile = new JSONObject(new JSONTokener(new FileReader(fileName)));
     }
 
     /**
-     * Parses a JSONObject from a player record into a Player object for the game
-     * to use. The argument is the entire JSON object from the loaded file.
+     * Parses the JSON representation of the player into a Player object.
      * 
-     * @param jFile
+     * @return The Player object
      */
     public Player parsePlayer() {
 
         JSONObject jPlayer = jFile.getJSONObject("player");
         String name = jPlayer.getString("name");
-        ArrayList<String> perks = parseListStr(jPlayer, "perks");
-        ArrayList<String> items = parseListStr(jPlayer, "items");
-        ArrayList<String> statuses = parseListStr(jPlayer, "statuses");
+        ArrayList<String> perks;
+        ArrayList<String> items;
+        ArrayList<String> statuses;
+
+        try {
+            perks = parseListStr(jPlayer.getJSONArray("perks"));
+            items = parseListStr(jPlayer.getJSONArray("items"));
+            statuses = parseListStr(jPlayer.getJSONArray("statuses"));
+        } catch (JSONException e) {
+            // If we couldn't find default data for the player, make a blank one
+            return new Player(name);
+        }
 
         return new Player(name, perks, items, statuses);
     }
@@ -47,6 +70,7 @@ public class GameParser {
      * Parses a JSONObject containing all scenes in the current game, into a
      * Hashmap of scenes for the game to store and use over the games runtime.
      * 
+     * @return A Hashmap of Scenes, keyed by their index from the JSON file
      */
     public HashMap<String, Scene> parseScenes() {
         JSONObject jScenes = jFile.getJSONObject("scenes");
@@ -64,17 +88,18 @@ public class GameParser {
      * Parses a single JSONObject scene into a Scene java object. Called by
      * parseScenes for each JSON scene in the file it reads.
      * 
-     * @param index
-     * @param jScene
+     * @param index  The index of this JSON scene
+     * @param jScene The JSON scene
+     * @return A Scene object
      */
     public Scene parseScene(String index, JSONObject jScene) {
         // Get the scene type
         String sceneType = jScene.getString("sceneType");
 
         // Get common scene fields
-        ArrayList<String> lines = parseListStr(jScene, "lines");
+        ArrayList<String> lines = parseListStr(jScene.getJSONArray("lines"));
         Optional<Event> event = parseEvent(jScene);
-        ArrayList<String> roots = parseListStr(jScene, "roots");
+        ArrayList<String> roots = parseListStr(jScene.getJSONArray("roots"));
 
         // Get additional fields based on type
         if (sceneType.matches("leaf")) {
@@ -92,8 +117,8 @@ public class GameParser {
     /**
      * Parses an Event from a JSON scene or branch.
      * 
-     * @param j
-     * @return
+     * @param j The scene or branch JSONObject
+     * @return Optionally, an Event object
      */
     public Optional<Event> parseEvent(JSONObject j) {
         Optional<JSONObject> jEvent = Optional.ofNullable(j.optJSONObject("event"));
@@ -119,8 +144,8 @@ public class GameParser {
     /**
      * Parses all branches from a JSON scene.
      * 
-     * @param jScene
-     * @return
+     * @param jScene The scene JSONObject
+     * @return A list of Branch objects this scene contains
      */
     public ArrayList<Branch> parseBranches(JSONObject jScene) {
         ArrayList<Branch> branches = new ArrayList<>();
@@ -137,43 +162,41 @@ public class GameParser {
     }
 
     /**
-     * Parses a JSON file to get the current scene the player is in.
+     * Parses the current scene from the JSON file.
      * 
+     * @return The current scene index
      */
     public String parseCurrScene() {
         return jFile.getString("currScene");
     }
 
     /**
-     * Parses a JSON file to get the next chapter the player will start when
-     * this one has concluded.
+     * Parses the next chapter, if it exists, from the JSON file.
      * 
+     * @return Optionally, the identity of the next chapter
      */
     public Optional<String> parseNextChapter() {
         return Optional.ofNullable(jFile.optString("nextChapter"));
     }
 
     /**
-     * Parses the game name from the save file.
+     * Parses the game name from JSON.
      * 
+     * @return The name of the Game
      */
     public String parseGameName() {
         return jFile.getString("gameName");
     }
 
     /**
-     * Takes a JSONObject that has an array, the key of that array, and returns
-     * the list as a java ArrayList. The elements are all strings, this is used
-     * for parsing list of player perks/items/statuses.
+     * Parses a JSONArray of strings into an ArrayList of strings.
      * 
-     * @param j
-     * @param key
-     * @return
+     * @param jList A JSONArray containing strings
+     * @return A List of strings from the JSONArray
      */
-    public ArrayList<String> parseListStr(JSONObject j, String key) {
-        JSONArray jObject = (JSONArray) j.get(key);
+    public ArrayList<String> parseListStr(JSONArray jList) {
         ArrayList<String> list = new ArrayList<>();
-        jObject.forEach(object -> {
+        jList.forEach(object -> {
             list.add((String) object);
         });
         return list;

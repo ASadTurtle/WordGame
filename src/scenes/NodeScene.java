@@ -19,25 +19,12 @@ import events.Event;
 public class NodeScene extends Scene {
     private ArrayList<Branch> branches;
 
-    /**
-     * This constructor fills all fields of scene.
-     * 
-     * @param index
-     * @param lines
-     * @param branches
-     * @param event
-     */
     public NodeScene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event,
             ArrayList<Branch> branches) {
         super(index, lines, roots, event);
         this.branches = branches;
     }
 
-    /**
-     * Get all branches in this scene.
-     * 
-     * @return
-     */
     public ArrayList<Branch> branches() {
         return branches;
     }

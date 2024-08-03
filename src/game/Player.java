@@ -7,9 +7,10 @@ import java.util.ArrayList;
  * Their name is stored here, as well as any items they carry, perks they have
  * gained, and statuses they are affected by.
  * 
- * TODO - Expand
+ * @author Ahmed El-Sayed
  */
 public class Player {
+
     private String name;
     private ArrayList<String> perks;
     private ArrayList<String> items;
@@ -18,7 +19,7 @@ public class Player {
     /**
      * Construct a new player, with the given name they have chosen.
      * 
-     * @param name
+     * @param name The players name
      */
     public Player(String name) {
         this.name = name;
@@ -28,13 +29,14 @@ public class Player {
     }
 
     /**
-     * This constructer instantiates a Player that exists from a save file.
-     * This should ONLY be called when loading a player state from a save.
+     * This constructor instantiates a Player that exists from a file.
+     * This should ONLY be called when loading a player state from a save or
+     * from a playerDefault file.
      * 
-     * @param name
-     * @param perks
-     * @param items
-     * @param statuses
+     * @param name     The players name
+     * @param perks    The players perks
+     * @param items    The players items
+     * @param statuses The players statuses
      */
     public Player(String name, ArrayList<String> perks, ArrayList<String> items, ArrayList<String> statuses) {
         this.name = name;
@@ -43,6 +45,9 @@ public class Player {
         this.statuses = statuses;
     }
 
+    /**
+     * @return The players name
+     */
     public String getName() {
         return name;
     }
@@ -51,7 +56,7 @@ public class Player {
      * Grants the player a new perk. If the player already has it, then nothing
      * else happens
      * 
-     * @param perk
+     * @param perk Perk we want to give to the player
      */
     public void gainPerk(String perk) {
         if (!hasPerk(perk)) {
@@ -63,7 +68,7 @@ public class Player {
      * Grants the player a new item. If the player already has it, then nothing
      * else happens
      * 
-     * @param item
+     * @param item Item we want to give to the player
      */
     public void gainItem(String item) {
         if (!hasItem(item)) {
@@ -75,7 +80,7 @@ public class Player {
      * Grants the player a new status. If the player already has it, then nothing
      * else happens
      * 
-     * @param status
+     * @param status Status we want to give to the player
      */
     public void gainStatus(String status) {
         if (!hasStatus(status)) {
@@ -86,8 +91,8 @@ public class Player {
     /**
      * Does the player have this perk?
      * 
-     * @param perk
-     * @return
+     * @param perk Perk we are checking for
+     * @return {@code true} if player has this perk
      */
     public boolean hasPerk(String perk) {
         return perks.contains(perk);
@@ -96,8 +101,8 @@ public class Player {
     /**
      * Does the player have this item?
      * 
-     * @param item
-     * @return
+     * @param item Item we are checking for
+     * @return {@code true} if player has this item
      */
     public boolean hasItem(String item) {
         return items.contains(item);
@@ -106,8 +111,8 @@ public class Player {
     /**
      * Does the player have this status?
      * 
-     * @param status
-     * @return
+     * @param status Status we are checking for
+     * @return {@code true} if player has this status
      */
     public boolean hasStatus(String status) {
         return statuses.contains(status);
@@ -117,7 +122,7 @@ public class Player {
      * The player loses the given perk. If they never had it, then nothing
      * changes.
      * 
-     * @param perk
+     * @param perk Perk we want to remove from player
      */
     public void losePerk(String perk) {
         if (hasPerk(perk)) {
@@ -129,7 +134,7 @@ public class Player {
      * The player loses the given item. If they never had it, then nothing
      * changes.
      * 
-     * @param item
+     * @param item Item we want to remove from player
      */
     public void loseItem(String item) {
         if (hasItem(item)) {
@@ -141,7 +146,7 @@ public class Player {
      * The player loses the given status. If they never had it, then nothing
      * changes.
      * 
-     * @param status
+     * @param status Status we want to remove from player
      */
     public void loseStatus(String status) {
         if (hasStatus(status)) {

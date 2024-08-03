@@ -10,20 +10,29 @@ import java.util.Scanner;
 import scenes.Scene;
 
 /**
+ * <p>
  * The Game class represents the current game state.
+ * </p>
  * 
+ * <p>
  * It holds the scenes loaded from a save, or from the default library for a
  * new game. These scenes can be modified as the player progresses through
  * the story, such as when a player goes through a branch of a scene,
  * that branch will not be available should they return to that scene.
+ * </p>
  * 
+ * <p>
  * It also holds the players state, with all the info stored in the Player
  * class.
+ * </p>
  * 
+ * <p>
  * It loops continuously until the player quits the game. The player may choose
  * to save the game state to a file, or load a previous game state from an
  * existing save.
+ * </p>
  * 
+ * @author Ahmed El-Sayed
  */
 public class Game {
     private static Player player;
@@ -32,7 +41,7 @@ public class Game {
     private static Optional<String> nextChapter;
     private static String gameName;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException, InterruptedException {
         // Initialise the game
         initGame();
 
@@ -45,9 +54,10 @@ public class Game {
     }
 
     /**
-     * Called on program startup, promtps the player to initialise a new game
+     * Called on program startup, prompts the player to initialise a new game.
+     * They may start a new game, or choose to load from an existing save.
      */
-    private static void initGame() throws Exception {
+    private static void initGame() throws IOException, InterruptedException {
         Scanner initScanner = new Scanner(System.in);
         // Prompt player to select a game, or load a save.
         clearTerminal();
@@ -100,12 +110,14 @@ public class Game {
     }
 
     /**
-     * Initialises a new game from user input. Returns if a new game was
-     * successfully initialised.
+     * The New Game menu. Initialises a new game from user input.
      * 
-     * @return
+     * @throws InterruptedException
+     * @throws IOException
+     * @return {@code true} if a new game was successfully created, {@code false} if
+     *         we go back to the main menu
      */
-    private static boolean newGame() throws Exception {
+    private static boolean newGame() throws IOException, InterruptedException {
         File gamesDir = new File("data");
 
         if (gamesDir.listFiles().length == 0) {
@@ -115,9 +127,10 @@ public class Game {
 
         // Add each available game directory to array
         ArrayList<String> games = new ArrayList<>();
-        for (File file : gamesDir.listFiles()) {
-            if (file.isDirectory()) {
-                games.add(file.getPath());
+        for (File gameDir : gamesDir.listFiles()) {
+            // Check file is directory and non-empty
+            if (gameDir.isDirectory() && gameDir.list().length > 0) {
+                games.add(gameDir.getPath());
             }
         }
 
@@ -172,10 +185,10 @@ public class Game {
                 } catch (Exception e) {
                     clearTerminal();
                     printGames(games);
-                    System.err.println(e);
+                    System.err.println(e.getMessage());
                     continue;
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 clearTerminal();
                 printGames(games);
                 System.out.println("Invalid option. Use [h]elp for a list of commands\n");
@@ -184,17 +197,17 @@ public class Game {
         }
 
         return true;
-
     }
 
     /**
-     * Takes user input to load from a selection of savefiles. Returns boolean
-     * for successful load.
+     * The Load game menu. Takes user input to load from a selection of savefiles.
      * 
      * @throws InterruptedException
      * @throws IOException
+     * @return {@code true} if save was successfully loaded, {@code false} if we go
+     *         back to main menu
      */
-    private static boolean loadSave() throws Exception {
+    private static boolean loadSave() throws IOException, InterruptedException {
         File savesDir = new File("saves");
 
         if (savesDir.listFiles().length == 0) {
@@ -258,10 +271,10 @@ public class Game {
                 } catch (Exception e) {
                     clearTerminal();
                     printSaves(saves);
-                    System.err.println(e);
+                    System.err.println(e.getMessage());
                     continue;
                 }
-            } catch (Exception e) {
+            } catch (NumberFormatException e) {
                 clearTerminal();
                 printSaves(saves);
                 System.out.println("Invalid option. Use [h]elp for a list of commands\n");
@@ -294,10 +307,10 @@ public class Game {
     }
 
     /**
-     * Prints commands for load menu
+     * Print commands for new game menu
      */
-    private static void logHelpLoad() {
-        System.out.println("<save_number>   - load save");
+    private static void logHelpNewGame() {
+        System.out.println("<game_number>   - start game");
         System.out.println("<[b]ack>        - return to main menu");
         System.out.println("<[q]uit>        - quit the game");
         System.out.println("<[h]elp>        - print this message");
@@ -305,10 +318,10 @@ public class Game {
     }
 
     /**
-     * Print commands for new game menu
+     * Prints commands for load menu
      */
-    private static void logHelpNewGame() {
-        System.out.println("<game_number>   - start game");
+    private static void logHelpLoad() {
+        System.out.println("<save_number>   - load save");
         System.out.println("<[b]ack>        - return to main menu");
         System.out.println("<[q]uit>        - quit the game");
         System.out.println("<[h]elp>        - print this message");
@@ -331,9 +344,25 @@ public class Game {
     }
 
     /**
-     * Prints all valid save files in the `saves` directory.
+     * Prints all valid WordGames in the {@code data} directory.
      * 
-     * @param saves
+     * @param games List of valid directories in {@code data}
+     */
+    private static void printGames(ArrayList<String> games) {
+        System.out.println("SELECT A GAME:");
+        int i = 1;
+        for (String game : games) {
+            String gameName = game.replace("_", " ").replace("data\\", "");
+            System.out.printf("%d. " + gameName + "\n", i);
+            i++;
+        }
+        System.out.println();
+    }
+
+    /**
+     * Prints all valid save files in the {@code saves} directory.
+     * 
+     * @param saves List of valid save files in {@code saves}
      */
     private static void printSaves(ArrayList<String> saves) {
         System.out.println("SAVES:");
@@ -341,17 +370,6 @@ public class Game {
         for (String save : saves) {
             String saveName = save.replace(".json", "").replace("saves\\", "");
             System.out.printf("%d. " + saveName + "\n", i);
-            i++;
-        }
-        System.out.println();
-    }
-
-    private static void printGames(ArrayList<String> games) {
-        System.out.println("SELECT A GAME:");
-        int i = 1;
-        for (String game : games) {
-            String gameName = game.replace("_", " ").replace("data\\", "");
-            System.out.printf("%d. " + gameName + "\n", i);
             i++;
         }
         System.out.println();
