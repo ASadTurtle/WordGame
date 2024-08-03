@@ -54,14 +54,9 @@ public class GameParser {
         ArrayList<String> items;
         ArrayList<String> statuses;
 
-        try {
-            perks = parseListStr(jPlayer.getJSONArray("perks"));
-            items = parseListStr(jPlayer.getJSONArray("items"));
-            statuses = parseListStr(jPlayer.getJSONArray("statuses"));
-        } catch (JSONException e) {
-            // If we couldn't find default data for the player, make a blank one
-            return new Player(name);
-        }
+        perks = parseListStr(jPlayer.optJSONArray("perks"));
+        items = parseListStr(jPlayer.optJSONArray("items"));
+        statuses = parseListStr(jPlayer.optJSONArray("statuses"));
 
         return new Player(name, perks, items, statuses);
     }
@@ -199,6 +194,9 @@ public class GameParser {
      */
     public ArrayList<String> parseListStr(JSONArray jList) {
         ArrayList<String> list = new ArrayList<>();
+        if (jList == null) {
+            return list;
+        }
         jList.forEach(object -> {
             list.add((String) object);
         });
