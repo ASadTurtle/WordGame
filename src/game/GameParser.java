@@ -97,7 +97,7 @@ public class GameParser {
         String sceneType = jScene.getString("sceneType");
 
         // Get common scene fields
-        ArrayList<String> lines = parseListStr(jScene.getJSONArray("lines"));
+        String lines = jScene.getString("lines");
         Optional<Event> event = parseEvent(jScene);
         ArrayList<String> roots = parseListStr(jScene.getJSONArray("roots"));
 

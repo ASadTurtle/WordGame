@@ -19,7 +19,7 @@ import events.Event;
 public class NodeScene extends Scene {
     private ArrayList<Branch> branches;
 
-    public NodeScene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event,
+    public NodeScene(String index, String lines, ArrayList<String> roots, Optional<Event> event,
             ArrayList<Branch> branches) {
         super(index, lines, roots, event);
         this.branches = branches;
