@@ -4,9 +4,7 @@
     "currScene" : "1.1.1.0",
     "scenes": {
         "1.1": {
-            "lines": [
-                "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
-            ],
+            "lines": "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke.",
             "sceneType": "node", 
             "roots": [],
             "branches": [
@@ -16,7 +14,7 @@
             ]
         },
         "1.1.1": {
-            "lines": ["You slowly draw your attention inward, using your will to focus past the pain and assess your body."],
+            "lines": "You slowly draw your attention inward, using your will to focus past the pain and assess your body.",
             "sceneType": "node",
             "roots": ["1.1"],
             "branches": [
@@ -28,14 +26,14 @@
             ]
         },
         "1.1.1.0": {
-            "lines": ["You also notice the pain localised in your chest is likely fractures in your rib-plates. It may be immensly painful, but you don't feel faint or nauseous. Your mind drifts back to your current situation."],
+            "lines": "You also notice the pain localised in your chest is likely fractures in your rib-plates. It may be immensly painful, but you don't feel faint or nauseous. Your mind drifts back to your current situation.",
             "event": {"type": "getStatus", "arg": "Wounded torso"},
             "sceneType": "leaf",
             "roots": ["1.1.1", "1.1.1.1"],
             "nextScene": "1.1"
         },
         "1.1.1.1": {
-            "lines": ["Your blood runs cold when you notice a strange distribution in the wieght of your body. Something that should be there is not anymore."],
+            "lines": "Your blood runs cold when you notice a strange distribution in the wieght of your body. Something that should be there is not anymore.",
             "sceneType": "node",
             "roots": ["1.1.1"],
             "branches": [

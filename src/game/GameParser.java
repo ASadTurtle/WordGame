@@ -54,14 +54,9 @@ public class GameParser {
         ArrayList<String> items;
         ArrayList<String> statuses;
 
-        try {
-            perks = parseListStr(jPlayer.getJSONArray("perks"));
-            items = parseListStr(jPlayer.getJSONArray("items"));
-            statuses = parseListStr(jPlayer.getJSONArray("statuses"));
-        } catch (JSONException e) {
-            // If we couldn't find default data for the player, make a blank one
-            return new Player(name);
-        }
+        perks = parseListStr(jPlayer.optJSONArray("perks"));
+        items = parseListStr(jPlayer.optJSONArray("items"));
+        statuses = parseListStr(jPlayer.optJSONArray("statuses"));
 
         return new Player(name, perks, items, statuses);
     }
@@ -97,7 +92,7 @@ public class GameParser {
         String sceneType = jScene.getString("sceneType");
 
         // Get common scene fields
-        ArrayList<String> lines = parseListStr(jScene.getJSONArray("lines"));
+        String lines = jScene.getString("lines");
         Optional<Event> event = parseEvent(jScene);
         ArrayList<String> roots = parseListStr(jScene.getJSONArray("roots"));
 
@@ -176,7 +171,10 @@ public class GameParser {
      * @return Optionally, the identity of the next chapter
      */
     public Optional<String> parseNextChapter() {
-        return Optional.ofNullable(jFile.optString("nextChapter"));
+        String nextChapter = jFile.optString("nextChapter");
+        if (!nextChapter.isEmpty())
+            return Optional.of(nextChapter);
+        return Optional.empty();
     }
 
     /**
@@ -196,6 +194,9 @@ public class GameParser {
      */
     public ArrayList<String> parseListStr(JSONArray jList) {
         ArrayList<String> list = new ArrayList<>();
+        if (jList == null) {
+            return list;
+        }
         jList.forEach(object -> {
             list.add((String) object);
         });

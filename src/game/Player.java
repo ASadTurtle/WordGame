@@ -17,18 +17,6 @@ public class Player {
     private ArrayList<String> statuses;
 
     /**
-     * Construct a new player, with the given name they have chosen.
-     * 
-     * @param name The players name
-     */
-    public Player(String name) {
-        this.name = name;
-        this.perks = new ArrayList<>();
-        this.items = new ArrayList<>();
-        this.statuses = new ArrayList<>();
-    }
-
-    /**
      * This constructor instantiates a Player that exists from a file.
      * This should ONLY be called when loading a player state from a save or
      * from a playerDefault file.

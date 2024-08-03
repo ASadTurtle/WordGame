@@ -17,7 +17,7 @@ import events.Event;
 public class LeafScene extends Scene {
     private String nextScene;
 
-    public LeafScene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event,
+    public LeafScene(String index, String lines, ArrayList<String> roots, Optional<Event> event,
             String nextScene) {
         super(index, lines, roots, event);
         this.nextScene = nextScene;

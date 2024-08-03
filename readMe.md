@@ -1,6 +1,6 @@
 # Word Game
 
-Word Game is a project I started on the 25th of July 2024 as a learning exercise.
+Word Game is a project I started on the July 25th 2024 as a learning exercise.
 The goal is to create a classic, text-based, CYOA game. I aimed to learn multiple
 facets of Software Engineering and Game Development with this project, including
 problems such as:
@@ -14,34 +14,34 @@ and any other issues that come up in the process of developing this game. I
 didn't give myself a roadmap for this purposefuly, I wanted to organically encounter
 each problem in development to motivate research into recommended practice and design.
 
-I started coding this in Java, and at the time your reading this I may have changed
+I started coding this in Java, and at the time you're reading this, I may have changed
 to another language, likely C#, to expand my horizons in languages.
 
-As of writing this, this repo exists on my uni account hosted by the UNSW gitlab
+As of writing this, this repo exists on my uni account hosted by the UNSW Gitlab
 service. I haven't set up my own project with a personal account, mostly because I
-have lots of other work im doing in the UNSW account and keeping it together is
+have lots of other work I'm doing in the UNSW account and keeping it together is
 convenient.
 
-If your reading this I've likely pasted a link to this repo on your discord in
+If you're reading this I've likely pasted a link to this repo on your discord in
 the middle of a conversation, and your now wondering if you should pretend to
 care about this project, or simply change the convo. If you aren't interested
 in this I'm fine with you letting me know, really. This is a project I'm doing
-for my own development, and I only discuss it because it's something im interested
+for my own development, and I only discuss it because it's something I'm interested
 in at the time, and I like verbalising my thoughts on my current work to someone.
 Right now you are probably my Rubber Duck.
 
 If your reading this still of your own volition, thanks for sticking around, and
 props for getting through a readMe file without getting bored. I'll take this
 opportunity to say if you have any feedback for my project, I truly would love to
-hear it, you can DM me on my Discord account any time, which is likely where you
+hear it. You can DM me on my Discord account any time, which is likely where you
 found this repo in the first place.
 
 When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Dwarven Saga'***
 
 ## Scene dictionaries
 
-Scenes and player info are stored in json files under the chapters directory.
-Each chapter stores a dictionary of scenes. The players current save is stored
+Scenes and player info are stored in json files under the `./data` or `./saves` directories.
+Each chapter stores a dictionary of scenes. The player's current save is stored
 in a seperate json file, along with information about the player. This includes
 their perks, statuses, items, and name. When the player creates a new save,
 they create a copy of the chapter.json file, which can be overwritten.
@@ -50,11 +50,11 @@ previous branches in later saves.
 
 Scene libraries are essentially *the game*. Each game is stored as a directory
 under the `./data` directory. The name of the directory denotes the name of the
-game the player may play, written in snake case (i.e. '***The Curse ofSigfried***'
-is stored n directory `./data/The_Curse_of_Sigfried`) so the engine may print
+game the player may play, written in snake case (i.e. '***The Curse of Sigfried***'
+is stored in directory `./data/The_Curse_of_Sigfried`) so the engine may print
 the name as the author intends.
 
-Within each of these directories, there one or many `chapter*.json` files, each
+Within each of these directories, there are one or many `chapter*.json` files, each
 being a JSON dictionary of the chapters of the game, containing multiple scenes.
 As of writing this I am considering a game config.json file to provide the
 game settings to the engine prior to starting it, for things such as:
@@ -63,7 +63,7 @@ game settings to the engine prior to starting it, for things such as:
 - Declare final chapter
 - Credits
 
-A saved game is stored as a JSON file, containing a list of scenes, the players
+A saved game is stored as a JSON file, containing a list of scenes, the player's
 current state, an index for the scene the player is currently in, an index
 for the next chapter.
 
@@ -86,12 +86,12 @@ Data files contain two main json files to start a new game:
 game (this is useful if you want your character to have a specific name, and
 don't plan on letting the player input their own, or they start with a
 particular inventory). The `playerDefault` file does not require all fields in
-the player JSON object, this is specified in the `player` section.
+the player JSON object; this is specified in the `player` section.
 - The `chapter1.json` to specify the initial state of the game (Games do not
 necessarily need to be longer than a single chapter, but a chapter1 file is
 always required to set the initial gamestate). The chapter files contain data
 for the scenes within the games, including possible branches, events,
-requirements, and otpioonally, the next chapter. This is essentially 'The Game'
+requirements, and optionally, the next chapter. This is essentially 'The Game'
 itself. All information about the scenes presented to the player, as well as
 their behaviour, should be defined here.
 
@@ -100,7 +100,7 @@ object itself, while the `chapter*.json` file should contain all other
 information (except `gameName` which is inferred on game startup).
 Any save file needs all of the below fields in the one file.
 
-In the section below you can find specifications for each JSON field for a
+In the sections below, you can find specifications for each JSON field for a
 valid json game data file.
 
 ### `gameName`
@@ -146,16 +146,16 @@ can be decided by the author. I choose to organise my scenes by a numbered index
 such as [`1.1`, `1.1.1`, `1.1.2`, etc.]. The following fields are required for a
 JSON representation of a scene:
 
-- `lines: String[]` - A list of strings, where each is a line to be printed to
-the terminal. This is the message that will be printed at the start of a scene
-to the player. This field can be an empty list if you wish.
+- `lines: String` - A string of paragraphs (seperated by newlines). This is the
+message that will be printed at the start of a scene to the player. This field
+can be empty if you wish.
 - `sceneType: String` - A scene can have multiple types, and
 their behaviours are documented in another section. For the game to identify
 which types the scenes have, each JSON object in the `scenes` array has a
 field `sceneType`, which **must** match the type of some scene from the engine.
 The parser should handle loading and saving a scenes type on its own, but it
 is suggested you do not alter the type of a scene in the save file.
-- `event: Event` - This field is **optional**. It represents a JSON Event object.
+- `event: Event` - This field is **optional**. It represents a JSON Event
 object.
 - `roots: String[]` - This list holds all the indices of scenes that directly
 lead to this scene. When this scene is resolved, the root scenes should no
@@ -265,7 +265,7 @@ he used to play. Advising to touch grass.
 
 ## Personal notes
 
-Ideas for chapter storage:
+Ideas:
 
 - All games stored in `./data` directory.
 - we can store different wordgames under different directories. I.e. `./data/CurseOfSigfried`, `./data/RyuuYukiMountain`, etc.
@@ -282,3 +282,6 @@ like `GameOverScene`, `ChapterEndScene`).
 fucking ages to make. What does standard input format look like?
 - Maybe new scene type specifically for dialogue with characters, that lets us
 repeat options of dialogue with them?
+- Make saves have a named directory matching a game name in `./data`?
+- Ommit having `parseGameName` and storing `gameName` in save json
+- Why not print save time in loadGame? (Access modified timestamp of save json)

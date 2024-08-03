@@ -26,11 +26,11 @@ import game.Player;
  */
 public abstract class Scene {
     private String index;
-    private ArrayList<String> lines;
+    private String lines;
     private ArrayList<String> roots;
     private Optional<Event> event;
 
-    public Scene(String index, ArrayList<String> lines, ArrayList<String> roots, Optional<Event> event) {
+    public Scene(String index, String lines, ArrayList<String> roots, Optional<Event> event) {
         this.index = index;
         this.lines = lines;
         this.roots = roots;
@@ -41,7 +41,7 @@ public abstract class Scene {
         return this.index;
     }
 
-    public ArrayList<String> lines() {
+    public String lines() {
         return this.lines;
     }
 

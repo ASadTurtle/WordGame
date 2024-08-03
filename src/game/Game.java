@@ -43,21 +43,19 @@ public class Game {
 
     public static void main(String[] args) throws IOException, InterruptedException {
         // Initialise the game
-        initGame();
+        mainMenu();
 
         // Debug message for game state
-        System.out.println("Player name: " + player.getName());
-        System.out.println("Lines in this scene: " + scenes.get(currScene).lines());
-        System.out.println("The current scene is: " + currScene);
-        System.out.println("The next chapter is: " + nextChapter);
-        System.out.println("Game name: " + gameName);
+        System.out.printf(
+                "Player name: %s\nLines in this scene: %s\nThe current scene is: %s\nThe next chapter is: %s\nGame name: %s\n\n",
+                player.getName(), scenes.get(currScene).lines(), currScene, nextChapter.orElse("0"), gameName);
     }
 
     /**
      * Called on program startup, prompts the player to initialise a new game.
      * They may start a new game, or choose to load from an existing save.
      */
-    private static void initGame() throws IOException, InterruptedException {
+    private static void mainMenu() throws IOException, InterruptedException {
         Scanner initScanner = new Scanner(System.in);
         // Prompt player to select a game, or load a save.
         clearTerminal();
@@ -67,7 +65,7 @@ public class Game {
             String input = initScanner.nextLine();
 
             // Start a new game
-            if (input.matches("[nN](ew [gG]ame)?") || input.matches("1")) {
+            if (input.matches("[nN](ew [gG]ame)?|1")) {
                 clearTerminal();
                 if (newGame()) {
                     initScanner.close();
@@ -78,7 +76,7 @@ public class Game {
             }
 
             // Load save
-            if (input.matches("[lL](oad)?") || input.matches("2")) {
+            if (input.matches("[lL](oad)?|2")) {
                 clearTerminal();
                 if (loadSave()) {
                     initScanner.close();
@@ -89,7 +87,7 @@ public class Game {
             }
 
             // Quit
-            if (input.matches("[qQ](uit)?") || input.matches("3")) {
+            if (input.matches("[qQ](uit)?|3")) {
                 clearTerminal();
                 initScanner.close();
                 System.exit(0);
@@ -99,13 +97,13 @@ public class Game {
             if (input.matches("[hH](elp)?")) {
                 clearTerminal();
                 printMainMenu();
-                logHelpInit();
+                logHelpMainMenu();
                 continue;
             }
 
             clearTerminal();
             printMainMenu();
-            System.out.println("Invalid option. Use [h]elp for a list of commands\n");
+            System.out.println("Invalid option, use [h]elp for a list of commands\n");
         }
     }
 
@@ -191,7 +189,7 @@ public class Game {
             } catch (NumberFormatException e) {
                 clearTerminal();
                 printGames(games);
-                System.out.println("Invalid option. Use [h]elp for a list of commands\n");
+                System.out.println("Invalid option, use [h]elp for a list of commands\n");
                 continue;
             }
         }
@@ -217,11 +215,9 @@ public class Game {
 
         // Add each valid saves filepath to array
         ArrayList<String> saves = new ArrayList<>();
-        for (File file : savesDir.listFiles()) {
-            if (file.getName().contains(".json")) {
+        for (File file : savesDir.listFiles())
+            if (file.getName().contains(".json"))
                 saves.add(file.getPath());
-            }
-        }
 
         // Loop until user selects save to load from
         Scanner loadScanner = new Scanner(System.in);
@@ -286,7 +282,7 @@ public class Game {
     }
 
     /**
-     * Print init options to player on game init.
+     * Print Main Menu options to player.
      */
     private static void printMainMenu() {
         System.out.println("WELCOME TO THE WORDGAME PROJECT!");
@@ -296,33 +292,68 @@ public class Game {
     }
 
     /**
+     * Prints all valid WordGames in the {@code data} directory.
+     * 
+     * @param games List of valid directories in {@code data}
+     */
+    private static void printGames(ArrayList<String> games) {
+        System.out.println("SELECT A GAME:");
+        int i = 1;
+        for (String game : games) {
+            String gameName = game.replace("_", " ").replace("data\\", "");
+            System.out.printf("%d. %s\n", i, gameName);
+            i++;
+        }
+        System.out.println();
+    }
+
+    /**
+     * Prints all valid save files in the {@code saves} directory.
+     * 
+     * @param saves List of valid save files in {@code saves}
+     */
+    private static void printSaves(ArrayList<String> saves) {
+        System.out.println("SAVES:");
+        int i = 1;
+        for (String save : saves) {
+            String saveName = save.replace(".json", "").replace("saves\\", "");
+            System.out.printf("%d. %s\n", i, saveName);
+            i++;
+        }
+        System.out.println();
+    }
+
+    /**
      * Prints commands for main menu
      */
-    private static void logHelpInit() {
+    private static void logHelpMainMenu() {
         System.out.println("<[n]ew game>    - start a new game");
         System.out.println("<[l]oad>        - load an existing save");
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println();
+        logHelpCommon();
     }
 
     /**
      * Print commands for new game menu
      */
     private static void logHelpNewGame() {
-        System.out.println("<game_number>   - start game");
+        System.out.println("<game_number>   - start a new game");
         System.out.println("<[b]ack>        - return to main menu");
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println();
+        logHelpCommon();
     }
 
     /**
      * Prints commands for load menu
      */
     private static void logHelpLoad() {
-        System.out.println("<save_number>   - load save");
+        System.out.println("<save_number>   - load an existing save");
         System.out.println("<[b]ack>        - return to main menu");
+        logHelpCommon();
+    }
+
+    /**
+     * Prints commands common to all menus
+     */
+    private static void logHelpCommon() {
         System.out.println("<[q]uit>        - quit the game");
         System.out.println("<[h]elp>        - print this message");
         System.out.println();
@@ -341,37 +372,5 @@ public class Game {
             new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
         else
             Runtime.getRuntime().exec("clear");
-    }
-
-    /**
-     * Prints all valid WordGames in the {@code data} directory.
-     * 
-     * @param games List of valid directories in {@code data}
-     */
-    private static void printGames(ArrayList<String> games) {
-        System.out.println("SELECT A GAME:");
-        int i = 1;
-        for (String game : games) {
-            String gameName = game.replace("_", " ").replace("data\\", "");
-            System.out.printf("%d. " + gameName + "\n", i);
-            i++;
-        }
-        System.out.println();
-    }
-
-    /**
-     * Prints all valid save files in the {@code saves} directory.
-     * 
-     * @param saves List of valid save files in {@code saves}
-     */
-    private static void printSaves(ArrayList<String> saves) {
-        System.out.println("SAVES:");
-        int i = 1;
-        for (String save : saves) {
-            String saveName = save.replace(".json", "").replace("saves\\", "");
-            System.out.printf("%d. " + saveName + "\n", i);
-            i++;
-        }
-        System.out.println();
     }
 }
