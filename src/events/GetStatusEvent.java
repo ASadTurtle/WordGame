@@ -4,6 +4,8 @@ import game.Player;
 
 /**
  * A GetStatusEvent is an event that gives the player a status. Need I say more?
+ * 
+ * @author Ahmed El-Sayed
  */
 public class GetStatusEvent implements Event {
     private String status;
@@ -12,6 +14,9 @@ public class GetStatusEvent implements Event {
         this.status = status;
     }
 
+    /**
+     * This event means the player gains a status.
+     */
     public void runEvent(Player player) {
         player.gainStatus(status);
     }

@@ -9,6 +9,8 @@ import game.Player;
  * The Branch class represents a possible branch from a scene. The branch
  * should have a prompt, as well as a scene it leads to, an index, and
  * optionally an event.
+ * 
+ * @author Ahmed El-Sayed
  */
 public class Branch {
     private String nextScene;
@@ -30,8 +32,10 @@ public class Branch {
     }
 
     /**
-     * Modify the players state by resolving the event in this scene, if one
+     * Modify the players state by resolving the event in this branch, if one
      * exists.
+     * 
+     * @param player The player character
      */
     public void runEvent(Player player) {
         if (event.isPresent()) {
