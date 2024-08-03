@@ -69,18 +69,61 @@ for the next chapter.
 
 ## JSON format specifications
 
+There are two places where the GameParser reads from: Data files and Save files.
+Both directories need json files in the correct format for the game engine to
+parse them to game data correctly. If the format within these files does not
+match the specifications, then the game will usually abort loading the data
+to its game state.
+
+Save files store all data about the gamestate when the game was saved in a
+single json file. There are certain fields that are required only in a save
+file, such as the `gameName` field, but all fields specified later are parsed
+when loading a save.
+
+Data files contain two main json files to start a new game:
+
+- The `playerDefault.json` to specify the default state of the player on a new
+game (this is useful if you want your character to have a specific name, and
+don't plan on letting the player input their own, or they start with a
+particular inventory). The `playerDefault` file does not require all fields in
+the player JSON object, this is specified in the `player` section.
+- The `chapter1.json` to specify the initial state of the game (Games do not
+necessarily need to be longer than a single chapter, but a chapter1 file is
+always required to set the initial gamestate). The chapter files contain data
+for the scenes within the games, including possible branches, events,
+requirements, and otpioonally, the next chapter. This is essentially 'The Game'
+itself. All information about the scenes presented to the player, as well as
+their behaviour, should be defined here.
+
+To summarize, the `playerDefault.json` file should only contain a JSON player
+object itself, while the `chapter*.json` file should contain all other
+information (except `gameName` which is inferred on game startup).
+Any save file needs all of the below fields in the one file.
+
+In the section below you can find specifications for each JSON field for a
+valid json game data file.
+
 ### `gameName`
 
-This field is a string, which informs the game which data folder the scenes are
+This field is a string, which informs the game which `data` directory the scenes are
 being loaded from. This is so that when one chapter ends, the game can then load
-the next chapter from the correct folder under `/data`.
+the next chapter from the correct directory under `data`. This field is only
+necessary for save files. When starting a new game, the gameName is inferred
+from the game directory name in `data`.
+
+```json
+"gameName": "The_Curse_Of_Sigfried"
+```
 
 ### `nextChapter`
 
 This field is a string, which informs the game which chapter the player will
-start after this one has concluded. It is not a required field, though this is
-an optional field. If the field is not found the game will assume this chapter
-is the final of the game.
+start after this one has concluded. This is an optional field. If the field is
+not found the game will assume this chapter is the final of the game.
+
+```json
+"nextChapter": "2"
+```
 
 ### `currScene`
 
@@ -199,9 +242,7 @@ This field stores a JSON object of the player with the following fields.
 - `items: String[]` - a list of strings, each representing an item
 - `statuses: String[]` - a list of strings, each representing a status
 
-A game may choose to have a default start for the player when starting a new
-game, with a `playerDefault.json` in its data directory. Otherwise all fields
-will be interpreted as empty when a new game starts.
+The `perks`, `items`, and `statuses` fields are not required to parse a player.
 
 ```json
 "player": {
