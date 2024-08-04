@@ -375,10 +375,10 @@ public class Game {
      * @throws InterruptedException
      */
     private static void clearTerminal() throws IOException, InterruptedException {
-        final String os = System.getProperty("os.name");
-        if (os.contains("Windows"))
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        final String os = System.getProperty("os.name").toLowerCase();
+        if (os.contains("win"))
+            System.out.print("\033[H\033[2J");
         else
-            Runtime.getRuntime().exec("clear");
+            new ProcessBuilder("/usr/bin/clear").inheritIO().start().waitFor();
     }
 }
