@@ -2,7 +2,9 @@ package game;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.Scanner;
@@ -164,13 +166,15 @@ public class Game {
                 int gameOption = Integer.parseInt(input) - 1;
                 try {
                     String game = games.get(gameOption);
+                    File playerDefault = new File(game + "\\playerDefault.json");
+                    File chapter = new File(game + "\\chapter1.json");
 
                     // Load game data from default player file
-                    GameParser playerParser = new GameParser(game + "\\playerDefault.json");
+                    GameParser playerParser = new GameParser(playerDefault);
                     player = playerParser.parsePlayer();
 
                     // Load game data from chapter 1
-                    GameParser chapterParser = new GameParser(game + "\\chapter1.json");
+                    GameParser chapterParser = new GameParser(chapter);
                     scenes = chapterParser.parseScenes();
                     currScene = chapterParser.parseCurrScene();
                     nextChapter = chapterParser.parseNextChapter();
@@ -214,10 +218,13 @@ public class Game {
         }
 
         // Add each valid saves filepath to array
-        ArrayList<String> saves = new ArrayList<>();
+        ArrayList<File> saves = new ArrayList<>();
         for (File file : savesDir.listFiles())
             if (file.getName().contains(".json"))
-                saves.add(file.getPath());
+                saves.add(file);
+
+        // Sort saves by last modified time (Descending)
+        saves.sort(Comparator.comparingLong(File::lastModified).reversed());
 
         // Loop until user selects save to load from
         Scanner loadScanner = new Scanner(System.in);
@@ -250,7 +257,7 @@ public class Game {
             try {
                 int saveOption = Integer.parseInt(input) - 1;
                 try {
-                    String save = saves.get(saveOption);
+                    File save = saves.get(saveOption);
 
                     // Load Game data from save file
                     GameParser gp = new GameParser(save);
@@ -311,13 +318,15 @@ public class Game {
      * Prints all valid save files in the {@code saves} directory.
      * 
      * @param saves List of valid save files in {@code saves}
+     * @throws IOException
      */
-    private static void printSaves(ArrayList<String> saves) {
+    private static void printSaves(ArrayList<File> saves) throws IOException {
         System.out.println("SAVES:");
         int i = 1;
-        for (String save : saves) {
-            String saveName = save.replace(".json", "").replace("saves\\", "");
-            System.out.printf("%d. %s\n", i, saveName);
+        for (File save : saves) {
+            String saveName = save.toString().replace(".json", "").replace("saves\\", "");
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+            System.out.printf("%d. %s - %s\n", i, saveName, sdf.format(save.lastModified()));
             i++;
         }
         System.out.println();

@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class GameParser {
      * @param fileName The JSON file we are parsing for game data
      * @throws FileNotFoundException
      */
-    public GameParser(String fileName) throws FileNotFoundException {
+    public GameParser(File fileName) throws FileNotFoundException {
         jFile = new JSONObject(new JSONTokener(new FileReader(fileName)));
     }
 
