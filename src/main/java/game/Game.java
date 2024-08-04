@@ -377,6 +377,11 @@ public class Game {
         System.out.println(ESC);
     }
 
+    /**
+     * Prints error message to player
+     * 
+     * @param error
+     */
     private static void logError(String error) {
         System.out.print(RED);
         System.out.println(error);
