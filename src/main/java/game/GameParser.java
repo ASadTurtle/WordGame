@@ -152,7 +152,7 @@ public class GameParser {
             String bScene = jBranch.getString("bScene");
             String prompt = jBranch.getString("prompt");
             Optional<Event> event = parseEvent(jBranch);
-            JSONObject jReq = jBranch.optJSONObject("requirements");
+            JSONObject jReq = jBranch.optJSONObject("requirement");
             Optional<Requirement> requirement = Optional.ofNullable(RequirementFactory.buildRequirement(jReq));
             branches.add(new Branch(bScene, prompt, event, requirement));
         });
