@@ -326,7 +326,7 @@ public class Game {
         for (File save : saves) {
             String saveName = save.toString().replace(".json", "").replace("saves\\", "");
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            System.out.printf("%d. %s - %s\n", i, saveName, sdf.format(save.lastModified()));
+            System.out.printf("%d. %-12s - %s\n", i, saveName, sdf.format(save.lastModified()));
             i++;
         }
         System.out.println();
