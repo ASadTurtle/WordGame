@@ -38,6 +38,22 @@ found this repo in the first place.
 
 When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Dwarven Saga'***
 
+## Installation
+
+If you'd like to install the Wordgame project, follow the steps below:
+
+```bash
+# Get the repository
+git clone https://github.com/ASadTurtle/WordGame.git
+cd WordGame
+
+# Compile project with maven
+mvn compile
+
+# Command to run engine [-q to make maven quiet]
+mvn exec:java -q
+```
+
 ## Scene dictionaries
 
 Scenes and player info are stored in json files under the `./data` or `./saves` directories.
