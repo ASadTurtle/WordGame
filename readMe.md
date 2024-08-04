@@ -243,12 +243,58 @@ to.
 - `prompt: String` - the text which is printed to the player for this
 string. (e.g. what choice the player is making in this branch)
 - `event: Event` - This field is **optional**. It represents a JSON Event object.
+- `requirement: Requirement` - This field is **optional**. It represents a JSON
+Requirement object.
 
 ```json
 {"bScene": "1.1.1", "prompt": "Assess my wounds"},
-{"bScene": "1.1.2", "prompt": "Try to stand"},
-{"bScene": "1.1.3", "prompt": "Try to remember"},
-{"bScene": "1.1.4", "prompt": "Listen"}
+...
+{"bScene": "1.1.1.0", "prompt": "It takes little effort, I've always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
+...
+{
+    "bScene": "1.1.4.3",
+    "prompt": "There's strength in me yet... I can open this door.",
+    "requirement": {"type": "or", "req": [{"type": "perk", "req": "Strong"}, {"type": "perk", "req": "Rebuilt"}]}
+}
+```
+
+### `requirement`
+
+A requirement object consists of a recursive json object with the following
+fields:
+
+- `type: String` - This field specifies what type of requirement this is.
+The following are valid types:
+  - `"item"`
+  - `"perk"`
+  - `"status"`
+  - `"or"`
+  - `"and"`
+  - `"not"`
+- `req: String | Requirement | Requirement[]` - This field can have one of three
+types, depending on what type our requirement is:
+  - If the requirement is a `"item"`, `"perk"`, or `"status"` type, then `req`
+  will be a String representing the item/perk/status required.
+  - If the requirement is a `"or"` or `"and"` type, then `req` will be an array
+  of requirements. When evaluated, an `"and"` requirement will return true if
+  **all** the requirements in its array are also true. Similarly, an `"or"`
+  requirement will return true if **any** of the requirements in its array are
+  also true.
+  - If the requirement is a `"not"` type, then `req` will be a requirement. When
+  evaluating a `"not"` requirement, it simply flips the boolean result of the
+  sub-requirement.
+
+With all of these combined, one can make branches with complex requirement logic
+to form unique choices in the game.
+
+```json
+"requirement": {"type": "and", "req": [
+        {"type": "item", "req": "Haft"},
+        {"type": "perk", "req": "Axehead"},
+        {"type": "perk", "req": "Blacksmith"},
+        {"type": "not", "req": {"type": "status", "req": "Broken arm"}}
+    ]
+}
 ```
 
 ### `player`
