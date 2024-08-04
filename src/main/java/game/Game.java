@@ -365,7 +365,6 @@ public class Game {
      * @throws IOException
      * @throws InterruptedException
      */
-    @SuppressWarnings("deprecation")
     private static void clearTerminal() throws IOException, InterruptedException {
         final String os = System.getProperty("os.name");
         if (os.contains("Windows"))
