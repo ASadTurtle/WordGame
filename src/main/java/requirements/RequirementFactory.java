@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 public class RequirementFactory {
     public static Requirement buildRequirement(JSONObject jsonReq) {
-        String type = jsonReq.getString("type");
+        String type = jsonReq.optString("type");
         JSONArray jRequirements = jsonReq.optJSONArray("req");
         JSONObject jRequirement = jsonReq.optJSONObject("req");
         String requirementStr = jsonReq.optString("req");

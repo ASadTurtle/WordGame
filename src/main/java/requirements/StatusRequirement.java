@@ -2,6 +2,11 @@ package requirements;
 
 import game.Player;
 
+/**
+ * TODO
+ * 
+ * @author Ahmed El-Sayed
+ */
 public class StatusRequirement implements Requirement {
     String status;
 
