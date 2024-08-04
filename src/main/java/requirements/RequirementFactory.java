@@ -14,6 +14,9 @@ import org.json.JSONObject;
  */
 public class RequirementFactory {
     public static Requirement buildRequirement(JSONObject jsonReq) {
+        if (jsonReq == null)
+            return null;
+
         String type = jsonReq.optString("type");
         JSONArray jRequirements = jsonReq.optJSONArray("req");
         JSONObject jRequirement = jsonReq.optJSONObject("req");

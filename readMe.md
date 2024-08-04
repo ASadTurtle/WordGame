@@ -280,7 +280,7 @@ types, depending on what type our requirement is:
   **all** the requirements in its array are also true. Similarly, an `"or"`
   requirement will return true if **any** of the requirements in its array are
   also true.
-  - If the requirement is a `"not"` type, then `req` will be a Requirement. When
+  - If the requirement is a `"not"` type, then `req` will be a requirement. When
   evaluating a `"not"` requirement, it simply flips the boolean result of the
   sub-requirement.
 
