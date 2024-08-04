@@ -43,7 +43,12 @@ public class Game {
     private static Optional<String> nextChapter;
     private static String gameName;
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    private static final String RED = "\033[31m";
+    private static final String GOLD = "\033[33m";
+    private static final String BLUE = "\033[34m";
+    private static final String ESC = "\033[0m";
+
+    public static void main(String[] args) throws IOException {
         // Initialise the game
         mainMenu();
 
@@ -56,8 +61,10 @@ public class Game {
     /**
      * Called on program startup, prompts the player to initialise a new game.
      * They may start a new game, or choose to load from an existing save.
+     * 
+     * @throws IOException
      */
-    private static void mainMenu() throws IOException, InterruptedException {
+    private static void mainMenu() throws IOException {
         Scanner initScanner = new Scanner(System.in);
         // Prompt player to select a game, or load a save.
         clearTerminal();
@@ -105,25 +112,18 @@ public class Game {
 
             clearTerminal();
             printMainMenu();
-            System.out.println("Invalid option, use [h]elp for a list of commands\n");
+            logError("Invalid option, use [h]elp for a list of commands");
         }
     }
 
     /**
      * The New Game menu. Initialises a new game from user input.
      * 
-     * @throws InterruptedException
-     * @throws IOException
      * @return {@code true} if a new game was successfully created, {@code false} if
      *         we go back to the main menu
      */
-    private static boolean newGame() throws IOException, InterruptedException {
+    private static boolean newGame() {
         File gamesDir = new File("data");
-
-        if (gamesDir.listFiles().length == 0) {
-            System.out.println("There are no games available :(");
-            return false;
-        }
 
         // Add each available game directory to array
         ArrayList<String> games = new ArrayList<>();
@@ -187,13 +187,13 @@ public class Game {
                 } catch (Exception e) {
                     clearTerminal();
                     printGames(games);
-                    System.err.println(e.getMessage());
+                    logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
                 clearTerminal();
                 printGames(games);
-                System.out.println("Invalid option, use [h]elp for a list of commands\n");
+                logError("Invalid option, use [h]elp for a list of commands");
                 continue;
             }
         }
@@ -204,18 +204,12 @@ public class Game {
     /**
      * The Load game menu. Takes user input to load from a selection of savefiles.
      * 
-     * @throws InterruptedException
      * @throws IOException
      * @return {@code true} if save was successfully loaded, {@code false} if we go
      *         back to main menu
      */
-    private static boolean loadSave() throws IOException, InterruptedException {
+    private static boolean loadSave() throws IOException {
         File savesDir = new File("saves");
-
-        if (savesDir.listFiles().length == 0) {
-            System.out.println("There are no saved games");
-            return false;
-        }
 
         // Add each valid saves filepath to array
         ArrayList<File> saves = new ArrayList<>();
@@ -274,13 +268,13 @@ public class Game {
                 } catch (Exception e) {
                     clearTerminal();
                     printSaves(saves);
-                    System.err.println(e.getMessage());
+                    logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
                 clearTerminal();
                 printSaves(saves);
-                System.out.println("Invalid option. Use [h]elp for a list of commands\n");
+                logError("Invalid option. Use [h]elp for a list of commands");
                 continue;
             }
         }
@@ -292,10 +286,12 @@ public class Game {
      * Print Main Menu options to player.
      */
     private static void printMainMenu() {
+        System.out.print(BLUE);
         System.out.println("WELCOME TO THE WORDGAME PROJECT!");
         System.out.println("1. New Game");
         System.out.println("2. Load");
-        System.out.println("3. Quit\n");
+        System.out.println("3. Quit");
+        System.out.println(ESC);
     }
 
     /**
@@ -304,6 +300,11 @@ public class Game {
      * @param games List of valid directories in {@code data}
      */
     private static void printGames(ArrayList<String> games) {
+        if (games.size() == 0) {
+            logError("There are no valid games :(");
+            return;
+        }
+        System.out.print(BLUE);
         System.out.println("SELECT A GAME:");
         int i = 1;
         for (String game : games) {
@@ -321,6 +322,11 @@ public class Game {
      * @throws IOException
      */
     private static void printSaves(ArrayList<File> saves) throws IOException {
+        if (saves.size() == 0) {
+            logError("There are no valid saves :(");
+            return;
+        }
+        System.out.print(BLUE);
         System.out.println("SAVES:");
         int i = 1;
         for (File save : saves) {
@@ -329,13 +335,14 @@ public class Game {
             System.out.printf("%d. %-12s - %s\n", i, saveName, sdf.format(save.lastModified()));
             i++;
         }
-        System.out.println();
+        System.out.println(ESC);
     }
 
     /**
      * Prints commands for main menu
      */
     private static void logHelpMainMenu() {
+        System.out.print(GOLD);
         System.out.println("<[n]ew game>    - start a new game");
         System.out.println("<[l]oad>        - load an existing save");
         logHelpCommon();
@@ -345,6 +352,7 @@ public class Game {
      * Print commands for new game menu
      */
     private static void logHelpNewGame() {
+        System.out.print(GOLD);
         System.out.println("<game_number>   - start a new game");
         System.out.println("<[b]ack>        - return to main menu");
         logHelpCommon();
@@ -354,6 +362,7 @@ public class Game {
      * Prints commands for load menu
      */
     private static void logHelpLoad() {
+        System.out.print(GOLD);
         System.out.println("<save_number>   - load an existing save");
         System.out.println("<[b]ack>        - return to main menu");
         logHelpCommon();
@@ -365,20 +374,19 @@ public class Game {
     private static void logHelpCommon() {
         System.out.println("<[q]uit>        - quit the game");
         System.out.println("<[h]elp>        - print this message");
-        System.out.println();
+        System.out.println(ESC);
+    }
+
+    private static void logError(String error) {
+        System.out.print(RED);
+        System.out.println(error);
+        System.out.println(ESC);
     }
 
     /**
      * Helper function, clears the terminal.
-     * 
-     * @throws IOException
-     * @throws InterruptedException
      */
-    private static void clearTerminal() throws IOException, InterruptedException {
-        final String os = System.getProperty("os.name").toLowerCase();
-        if (os.contains("win"))
-            System.out.print("\033[H\033[2J");
-        else
-            new ProcessBuilder("/usr/bin/clear").inheritIO().start().waitFor();
+    private static void clearTerminal() {
+        System.out.print("\033[H\033[2J");
     }
 }
