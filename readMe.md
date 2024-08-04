@@ -40,7 +40,7 @@ When the project is done, I hope you enjoy ***'The Curse of Sigfried - A Dwarven
 
 ## Installation
 
-**Note**: *Requires JDK and Maven to be installed to your machine.*
+**Note**: *Requires JDK 22 and Maven to be installed to your machine.*
 
 If you'd like to install the Wordgame project, follow the steps below:
 
