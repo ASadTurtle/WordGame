@@ -4,6 +4,14 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * The Requirement Factory is a Factory pattern class that assists the
+ * GameParser class to instantiate a Requirement from a JSONObject. If other
+ * Requirement classes are defined they will need to be instantiated here for
+ * them to be added to a branch.
+ * 
+ * @author Ahmed El-Sayed
+ */
 public class RequirementFactory {
     public static Requirement buildRequirement(JSONObject jsonReq) {
         String type = jsonReq.optString("type");

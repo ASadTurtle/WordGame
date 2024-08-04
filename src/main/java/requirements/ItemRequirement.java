@@ -3,7 +3,8 @@ package requirements;
 import game.Player;
 
 /**
- * TODO
+ * A item requirement checks if the player has the required item, by calling
+ * the {@code player.hasItem(item)} method.
  * 
  * @author Ahmed El-Sayed
  */

@@ -3,7 +3,8 @@ package requirements;
 import game.Player;
 
 /**
- * TODO
+ * A status requirement checks if the player has the required status, by calling
+ * the {@code player.hasStatus(status)} method.
  * 
  * @author Ahmed El-Sayed
  */

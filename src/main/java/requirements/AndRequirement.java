@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import game.Player;
 
 /**
- * TODO
+ * An AND requirement holds a list of requirements, and evaluates to true if ALL
+ * of its sub-requirements are also true.
  * 
  * @author Ahmed El-Sayed
  */

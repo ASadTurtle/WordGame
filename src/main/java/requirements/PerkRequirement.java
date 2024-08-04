@@ -3,7 +3,8 @@ package requirements;
 import game.Player;
 
 /**
- * TODO
+ * A perk requirement checks if the player has the required perk, by calling
+ * the {@code player.hasPerk(perk)} method.
  * 
  * @author Ahmed El-Sayed
  */
