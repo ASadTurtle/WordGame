@@ -46,11 +46,11 @@ public class NodeScene extends Scene {
     }
 
     public String run(Scanner sc, HashMap<String, Scene> scenes, Player player) {
-        // Run event if it exists
-        runEvent(player);
-
         // Print lines for this scene (Optionally has player name)
         GameMenu.printScene(lines(), player);
+
+        // Run event if it exists
+        runEvent(player);
 
         // Find elligble branches
         ArrayList<Branch> elligbleBranches = new ArrayList<>();
