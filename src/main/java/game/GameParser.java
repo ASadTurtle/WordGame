@@ -30,7 +30,7 @@ import scenes.Scene;
 public class GameParser {
 
     // File parsed to JSON Object
-    JSONObject jFile;
+    private JSONObject jFile;
 
     /**
      * Given the filename of a JSON data file or JSON save file, creates a
