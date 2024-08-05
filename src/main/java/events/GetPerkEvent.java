@@ -20,4 +20,8 @@ public class GetPerkEvent implements Event {
     public void runEvent(Player player) {
         player.gainPerk(perk);
     }
+
+    public void logEvent() {
+        System.out.printf("\\033[93mNew Perk: %s\\n", perk);
+    }
 }

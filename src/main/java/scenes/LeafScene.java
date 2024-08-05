@@ -9,10 +9,7 @@ import game.Player;
 
 /**
  * A leaf scene is one that does not lead to any other branches. It is the final
- * scene originating from a certain branch, which we record as its root, and
- * will have a nextScene to return to, usually the parent scene of the root.
- * When we return from a Leaf Scene, we usually remove the branch it came from
- * so as to not repeat previously visited scenes.
+ * originating from a certain branch, and will have a nextScene to return to.
  * 
  * @author Ahmed El-Sayed
  */
@@ -31,7 +28,8 @@ public class LeafScene extends Scene {
 
     @Override
     public String run(Scanner sc, HashMap<String, Scene> scenes, Player player) {
-        System.out.printf(this.lines() + "\n\n", player.getName());
+        System.out.printf(this.lines() + "\n", player.getName());
+        runEvent(player);
         System.out.println("Press ENTER to continue...");
 
         // TODO - make this in a menu class

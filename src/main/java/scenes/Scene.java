@@ -60,6 +60,7 @@ public abstract class Scene {
     public void runEvent(Player player) {
         if (event.isPresent()) {
             event.get().runEvent(player);
+            event.get().logEvent();
         }
     }
 }

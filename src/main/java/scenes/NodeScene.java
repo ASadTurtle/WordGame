@@ -9,15 +9,21 @@ import events.Event;
 import game.Player;
 
 /**
+ * <p>
  * A NodeScene is a scene that branches to other scenes, depending on the
  * players input.
+ * </p>
  * 
+ * <p>
  * It should list all available choices for the player to make,
  * and if the player ever returns to this scene from a branch, that branch
  * should not be available to select again.
+ * </p>
  * 
+ * <p>
  * The branches of a node scene is a list of Branch objects, the details of
  * which are specified in the respective class.
+ * </p>
  */
 public class NodeScene extends Scene {
     private ArrayList<Branch> branches;
@@ -85,10 +91,13 @@ public class NodeScene extends Scene {
                     return branch.nextScene();
 
                 } catch (Exception e) {
+
+                    // TODO
                     System.out.println("TODO - ERROR MESSAGE");
                     continue;
                 }
             } catch (NumberFormatException e) {
+                // TODO
                 System.out.println("TODO - ERROR MESSAGE");
                 continue;
             }
