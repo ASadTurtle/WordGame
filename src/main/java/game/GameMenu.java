@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class GameMenu {
+    // ANSI characters
     private static final String RED = "\033[91m";
     private static final String GOLD = "\033[93m";
     private static final String BLUE = "\033[94m";
@@ -122,5 +123,17 @@ public class GameMenu {
      */
     public static void clearTerminal() {
         System.out.print("\033[H\033[2J");
+    }
+
+    /**
+     * Prints information about the player to terminal
+     */
+    public static void logPlayer(Player player) {
+        System.out.print(BLUE);
+        System.out.printf("%s\n", player.name());
+        System.out.printf("Perks:      %s\n", player.perks());
+        System.out.printf("Inventory:  %s\n", player.items());
+        System.out.printf("Statuses:   %s\n", player.statuses());
+        System.out.println(ESC);
     }
 }
