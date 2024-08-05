@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import events.Event;
+import game.GameMenu;
 import game.Player;
 
 /**
@@ -26,19 +27,49 @@ public class LeafScene extends Scene {
         return this.nextScene;
     }
 
-    @Override
     public String run(Scanner sc, HashMap<String, Scene> scenes, Player player) {
-        System.out.printf(this.lines() + "\n", player.getName());
+        GameMenu.printScene(lines(), player);
         runEvent(player);
-        System.out.println("Press ENTER to continue...");
+        System.out.println("Press ENTER to continue...\n");
 
-        // TODO - make this in a menu class
-        String input = sc.nextLine();
-        // Quit
-        if (input.matches("[qQ](uit)?")) {
-            sc.close();
-            System.exit(0);
+        while (true) {
+            String input = sc.nextLine();
+
+            // Quit
+            if (input.matches("[qQ](uit)?")) {
+                GameMenu.clearTerminal();
+                sc.close();
+                System.exit(0);
+            }
+
+            // Print player info
+            if (input.matches("[pP](layer)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printScene(lines(), player);
+                logEvent();
+                player.logPlayer();
+                System.out.println("Press ENTER to continue...\n");
+                player.logPlayer();
+                continue;
+            }
+
+            // Print commands
+            if (input.matches("[h](elp)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printScene(lines(), player);
+                logEvent();
+                System.out.println("Press ENTER to continue...\n");
+                GameMenu.logHelpCommon();
+                continue;
+            }
+
+            if (input.isBlank())
+                return nextScene;
+
+            GameMenu.clearTerminal();
+            GameMenu.printScene(lines(), player);
+            logEvent();
+            System.out.println("Press ENTER to continue...\n");
         }
-        return nextScene;
     }
 }

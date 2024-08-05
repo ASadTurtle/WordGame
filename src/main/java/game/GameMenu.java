@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import scenes.Branch;
+
 public class GameMenu {
     // ANSI characters
     private static final String RED = "\033[91m";
@@ -68,13 +70,39 @@ public class GameMenu {
         System.out.println(ESC);
     }
 
+    public static void printScene(String lines, Player player) {
+        System.out.printf(lines + "\n", player.name());
+    }
+
+    /**
+     * Prints all branches the player can choose. We dont take any inelligble
+     * branch in the {@code branches} parameter, so we dont check here.
+     * 
+     * @param branches Elligble branches the player may select
+     * @param player   The player character
+     */
+    public static void printBranches(ArrayList<Branch> branches, Player player) {
+        // Print branches
+        int i = 0;
+        for (Branch branch : branches) {
+            i++;
+            // Print options that have requirements blue
+            if (branch.hasRequirement())
+                System.out.print(BLUE);
+
+            System.out.printf("%d. %s\n", i, branch.prompt());
+            System.out.print(ESC);
+        }
+        System.out.println();
+    }
+
     /**
      * Prints commands for main menu
      */
     public static void logHelpMainMenu() {
         System.out.print(GOLD);
-        System.out.println("<[n]ew game>    - start a new game");
-        System.out.println("<[l]oad>        - load an existing save");
+        System.out.println("<[n]ew game>      - start a new game");
+        System.out.println("<[l]oad>          - load an existing save");
         logHelpCommon();
     }
 
@@ -83,8 +111,8 @@ public class GameMenu {
      */
     public static void logHelpNewGame() {
         System.out.print(GOLD);
-        System.out.println("<game_number>   - start a new game");
-        System.out.println("<[b]ack>        - return to main menu");
+        System.out.println("<game_number>     - start a new game");
+        System.out.println("<[b]ack>          - return to main menu");
         logHelpCommon();
     }
 
@@ -93,8 +121,15 @@ public class GameMenu {
      */
     public static void logHelpLoad() {
         System.out.print(GOLD);
-        System.out.println("<save_number>   - load an existing save");
-        System.out.println("<[b]ack>        - return to main menu");
+        System.out.println("<save_number>     - load an existing save");
+        System.out.println("<[b]ack>          - return to main menu");
+        logHelpCommon();
+    }
+
+    public static void logHelpScene() {
+        System.out.print(GOLD);
+        System.out.println("<branch_number>   - select branch");
+        System.out.println("<[p]layer>        - print player info");
         logHelpCommon();
     }
 
@@ -102,8 +137,9 @@ public class GameMenu {
      * Prints commands common to all menus
      */
     public static void logHelpCommon() {
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
+        System.out.print(GOLD);
+        System.out.println("<[q]uit>          - quit the game");
+        System.out.println("<[h]elp>          - print this message");
         System.out.println(ESC);
     }
 
@@ -119,13 +155,6 @@ public class GameMenu {
     }
 
     /**
-     * Helper function, clears the terminal.
-     */
-    public static void clearTerminal() {
-        System.out.print("\033[H\033[2J");
-    }
-
-    /**
      * Prints information about the player to terminal
      */
     public static void logPlayer(Player player) {
@@ -135,5 +164,12 @@ public class GameMenu {
         System.out.printf("Inventory:  %s\n", player.items());
         System.out.printf("Statuses:   %s\n", player.statuses());
         System.out.println(ESC);
+    }
+
+    /**
+     * Helper function, clears the terminal.
+     */
+    public static void clearTerminal() {
+        System.out.print("\033[H\033[2J");
     }
 }

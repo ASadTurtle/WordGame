@@ -44,6 +44,12 @@ public abstract class Scene {
         return this.lines;
     }
 
+    public void logEvent() {
+        if (event.isPresent()) {
+            event.get().logEvent();
+        }
+    }
+
     /**
      * The run behaviour of the scene. Outputs the index of the next scene.
      * 

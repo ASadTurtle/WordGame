@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import events.Event;
+import game.GameMenu;
 import game.Player;
 
 /**
@@ -28,9 +29,6 @@ import game.Player;
 public class NodeScene extends Scene {
     private ArrayList<Branch> branches;
 
-    private static final String ESC = "\033[0m";
-    private static final String BLUE = "\033[94m";
-
     public NodeScene(String index, String lines, Optional<Event> event,
             ArrayList<Branch> branches) {
         super(index, lines, event);
@@ -47,58 +45,75 @@ public class NodeScene extends Scene {
         return branches;
     }
 
-    @Override
     public String run(Scanner sc, HashMap<String, Scene> scenes, Player player) {
-        // Print lines for this scene (Optionally has player name)
-        System.out.printf(this.lines() + "\n", player.getName());
-
         // Run event if it exists
         runEvent(player);
 
-        // Print branches
-        int i = 0;
-        for (Branch branch : branches) {
-            if (!branch.evaluateRequirement(player))
-                continue;
-            i++;
-            // Print options that have requirements blue
-            if (branch.hasRequirement())
-                System.out.print(BLUE);
+        // Print lines for this scene (Optionally has player name)
+        GameMenu.printScene(lines(), player);
 
-            System.out.printf("%d. %s\n", i, branch.prompt());
-            System.out.print(ESC);
+        // Find elligble branches
+        ArrayList<Branch> elligbleBranches = new ArrayList<>();
+        for (Branch branch : branches) {
+            if (branch.evaluateRequirement(player))
+                elligbleBranches.add(branch);
         }
 
-        // TODO - make this in a menu class
+        // Print elligble branches
+        GameMenu.printBranches(elligbleBranches, player);
+
+        // Loop until player selects an elligble branch
         while (true) {
-            String input = sc.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Quit
-            if (input.matches("[qQ](uit)?")) {
+            if (input.matches("[q](uit)?")) {
+                GameMenu.clearTerminal();
                 sc.close();
                 System.exit(0);
+            }
+
+            // Print player info
+            if (input.matches("[p](layer)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printScene(lines(), player);
+                GameMenu.printBranches(elligbleBranches, player);
+                player.logPlayer();
+                continue;
+            }
+
+            // Print commands
+            if (input.matches("[h](elp)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printScene(lines(), player);
+                GameMenu.printBranches(elligbleBranches, player);
+                GameMenu.logHelpScene();
+                continue;
             }
 
             // Attempt to select branch from user input
             try {
                 int bOption = Integer.parseInt(input) - 1;
                 try {
-                    Branch branch = branches.get(bOption);
+                    Branch branch = elligbleBranches.get(bOption);
 
                     // Run event if it exists in this branch
                     branch.runEvent(player);
                     branches.remove(branch);
                     return branch.nextScene();
 
-                } catch (Exception e) {
-
-                    // TODO
-                    System.out.println("TODO - ERROR MESSAGE");
+                } catch (IndexOutOfBoundsException e) {
+                    GameMenu.clearTerminal();
+                    GameMenu.printScene(lines(), player);
+                    GameMenu.printBranches(elligbleBranches, player);
+                    GameMenu.logError("Invalid branch");
                     continue;
                 }
             } catch (NumberFormatException e) {
-                // TODO
-                System.out.println("TODO - ERROR MESSAGE");
+                GameMenu.clearTerminal();
+                GameMenu.printScene(lines(), player);
+                GameMenu.printBranches(elligbleBranches, player);
+                GameMenu.logError("Invalid option. Use [h]elp for a list of commands");
                 continue;
             }
         }
