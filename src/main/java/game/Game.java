@@ -1,7 +1,10 @@
 package game;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -43,14 +46,13 @@ public class Game {
     private static String gameName;
 
     public static void main(String[] args) throws IOException {
+        Scanner inputScanner = new Scanner(System.in);
+
+        // Initialise the game
+        mainMenu(inputScanner);
+
         // Loop until player quits
         while (true) {
-            Scanner inputScanner = new Scanner(System.in);
-
-            // Initialise the game
-            if (nextChapter == null) {
-                mainMenu(inputScanner);
-            }
 
             // Run the game
             while (!currScene.isBlank()) {
@@ -61,9 +63,21 @@ public class Game {
                 currScene = scene.run(inputScanner, scenes, player);
             }
 
-            // If we were given a next chapter, load it now
+            // If we were given the next chapter, load it now
             if (nextChapter.isPresent()) {
-                // TODO - load the next chapter
+                // Get path for next chapter file
+                String chapterName = "chapter" + nextChapter.get() + ".json";
+                System.out.println(gameName);
+                Path filePath = Paths.get(gameName, chapterName);
+                System.out.println(filePath);
+                File nextChapter = filePath.toFile();
+
+                // Load next chapter
+                loadGame(nextChapter);
+            }
+            // Otherwise, go to main menu
+            else {
+                mainMenu(inputScanner);
             }
         }
     }
@@ -177,14 +191,10 @@ public class Game {
                     File chapter = new File(game + "\\chapter1.json");
 
                     // Load game data from default player file
-                    GameParser playerParser = new GameParser(playerDefault);
-                    player = playerParser.parsePlayer();
+                    loadPlayer(playerDefault);
 
                     // Load game data from chapter 1
-                    GameParser chapterParser = new GameParser(chapter);
-                    scenes = chapterParser.parseScenes();
-                    currScene = chapterParser.parseCurrScene();
-                    nextChapter = chapterParser.parseNextChapter();
+                    loadGame(chapter);
                     gameName = game;
 
                     GameMenu.clearTerminal();
@@ -205,6 +215,19 @@ public class Game {
         }
 
         return true;
+    }
+
+    // TODO
+    private static void loadPlayer(File playerDefault) throws FileNotFoundException {
+        GameParser playerParser = new GameParser(playerDefault);
+        player = playerParser.parsePlayer();
+    }
+
+    private static void loadGame(File chapter) throws FileNotFoundException {
+        GameParser chapterParser = new GameParser(chapter);
+        scenes = chapterParser.parseScenes();
+        currScene = chapterParser.parseCurrScene();
+        nextChapter = chapterParser.parseNextChapter();
     }
 
     /**
@@ -259,12 +282,9 @@ public class Game {
                     File save = saves.get(saveOption);
 
                     // Load Game data from save file
-                    GameParser gp = new GameParser(save);
-                    player = gp.parsePlayer();
-                    scenes = gp.parseScenes();
-                    currScene = gp.parseCurrScene();
-                    nextChapter = gp.parseNextChapter();
-                    gameName = gp.parseGameName();
+                    loadPlayer(save);
+                    loadGame(save);
+                    gameName = new GameParser(save).parseGameName();
 
                     GameMenu.clearTerminal();
                     break;
