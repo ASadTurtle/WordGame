@@ -47,7 +47,6 @@ public class LeafScene extends Scene {
                 GameMenu.clearTerminal();
                 GameMenu.printScene(lines(), player);
                 logEvent();
-                player.logPlayer();
                 System.out.println("Press ENTER to continue...\n");
                 player.logPlayer();
                 continue;
