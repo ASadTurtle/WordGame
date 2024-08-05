@@ -2,7 +2,6 @@ package game;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -42,11 +41,6 @@ public class Game {
     private static String currScene;
     private static Optional<String> nextChapter;
     private static String gameName;
-
-    private static final String RED = "\033[91m";
-    private static final String GOLD = "\033[93m";
-    private static final String BLUE = "\033[94m";
-    private static final String ESC = "\033[0m";
 
     public static void main(String[] args) throws IOException {
         // Loop until player quits
