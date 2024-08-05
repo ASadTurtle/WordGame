@@ -51,17 +51,25 @@ public class Game {
     public static void main(String[] args) throws IOException {
         // Loop until player quits
         while (true) {
-            // Initialise the game
             Scanner inputScanner = new Scanner(System.in);
-            mainMenu(inputScanner);
+
+            // Initialise the game
+            if (nextChapter == null) {
+                mainMenu(inputScanner);
+            }
 
             // Run the game
             while (!currScene.isBlank()) {
-                clearTerminal();
+                GameMenu.clearTerminal();
 
                 // Run scene logic
                 Scene scene = scenes.get(currScene);
                 currScene = scene.run(inputScanner, scenes, player);
+            }
+
+            // If we were given a next chapter, load it now
+            if (nextChapter.isPresent()) {
+                // TODO - load the next chapter
             }
         }
     }
@@ -74,50 +82,50 @@ public class Game {
      */
     private static void mainMenu(Scanner sc) throws IOException {
         // Prompt player to select a game, or load a save.
-        clearTerminal();
-        printMainMenu();
+        GameMenu.clearTerminal();
+        GameMenu.printMainMenu();
 
         while (true) {
             String input = sc.nextLine();
 
             // Start a new game
             if (input.matches("[nN](ew [gG]ame)?|1")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 if (newGame(sc)) {
                     break;
                 }
-                printMainMenu();
+                GameMenu.printMainMenu();
                 continue;
             }
 
             // Load save
             if (input.matches("[lL](oad)?|2")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 if (loadSave(sc)) {
                     break;
                 }
-                printMainMenu();
+                GameMenu.printMainMenu();
                 continue;
             }
 
             // Quit
             if (input.matches("[qQ](uit)?|3")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 sc.close();
                 System.exit(0);
             }
 
             // Print commands
             if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printMainMenu();
-                logHelpMainMenu();
+                GameMenu.clearTerminal();
+                GameMenu.printMainMenu();
+                GameMenu.logHelpMainMenu();
                 continue;
             }
 
-            clearTerminal();
-            printMainMenu();
-            logError("Invalid option, use [h]elp for a list of commands");
+            GameMenu.clearTerminal();
+            GameMenu.printMainMenu();
+            GameMenu.logError("Invalid option, use [h]elp for a list of commands");
         }
     }
 
@@ -140,13 +148,13 @@ public class Game {
         }
 
         // Loop until user selects a game to play.
-        printGames(games);
+        GameMenu.printGames(games);
         while (true) {
             String input = sc.nextLine();
 
             // Quit
             if (input.matches("[qQ](uit)?")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 // Leave immediately
                 sc.close();
                 System.exit(0);
@@ -154,15 +162,15 @@ public class Game {
 
             // Back to main menu
             if (input.matches("[bB](ack)?")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
             if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printGames(games);
-                logHelpNewGame();
+                GameMenu.clearTerminal();
+                GameMenu.printGames(games);
+                GameMenu.logHelpNewGame();
                 continue;
             }
 
@@ -183,21 +191,21 @@ public class Game {
                     scenes = chapterParser.parseScenes();
                     currScene = chapterParser.parseCurrScene();
                     nextChapter = chapterParser.parseNextChapter();
-                    gameName = game.replace("data\\", "");
+                    gameName = game;
 
-                    clearTerminal();
+                    GameMenu.clearTerminal();
                     break;
 
                 } catch (Exception e) {
-                    clearTerminal();
-                    printGames(games);
-                    logError(e.getMessage());
+                    GameMenu.clearTerminal();
+                    GameMenu.printGames(games);
+                    GameMenu.logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
-                clearTerminal();
-                printGames(games);
-                logError("Invalid option, use [h]elp for a list of commands");
+                GameMenu.clearTerminal();
+                GameMenu.printGames(games);
+                GameMenu.logError("Invalid option, use [h]elp for a list of commands");
                 continue;
             }
         }
@@ -224,13 +232,13 @@ public class Game {
         // Sort saves by last modified time (Descending)
         saves.sort(Comparator.comparingLong(File::lastModified).reversed());
 
-        printSaves(saves);
+        GameMenu.printSaves(saves);
         while (true) {
             String input = sc.nextLine();
 
             // Quit
             if (input.matches("[qQ](uit)?")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 // Leave immediately
                 sc.close();
                 System.exit(0);
@@ -238,15 +246,15 @@ public class Game {
 
             // Back to main menu
             if (input.matches("[bB](ack)?")) {
-                clearTerminal();
+                GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
             if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printSaves(saves);
-                logHelpLoad();
+                GameMenu.clearTerminal();
+                GameMenu.printSaves(saves);
+                GameMenu.logHelpLoad();
                 continue;
             }
 
@@ -264,136 +272,22 @@ public class Game {
                     nextChapter = gp.parseNextChapter();
                     gameName = gp.parseGameName();
 
-                    clearTerminal();
+                    GameMenu.clearTerminal();
                     break;
 
                 } catch (Exception e) {
-                    clearTerminal();
-                    printSaves(saves);
-                    logError(e.getMessage());
+                    GameMenu.clearTerminal();
+                    GameMenu.printSaves(saves);
+                    GameMenu.logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
-                clearTerminal();
-                printSaves(saves);
-                logError("Invalid option. Use [h]elp for a list of commands");
+                GameMenu.clearTerminal();
+                GameMenu.printSaves(saves);
+                GameMenu.logError("Invalid option. Use [h]elp for a list of commands");
                 continue;
             }
         }
-
         return true;
-    }
-
-    /**
-     * Print Main Menu options to player.
-     */
-    private static void printMainMenu() {
-        System.out.print(BLUE);
-        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
-        System.out.println("1. New Game");
-        System.out.println("2. Load");
-        System.out.println("3. Quit");
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints all valid WordGames in the {@code data} directory.
-     * 
-     * @param games List of valid directories in {@code data}
-     */
-    private static void printGames(ArrayList<String> games) {
-        if (games.size() == 0) {
-            logError("There are no valid games :(");
-            return;
-        }
-        System.out.print(BLUE);
-        System.out.println("SELECT A GAME:");
-        int i = 1;
-        for (String game : games) {
-            String gameName = game.replace("_", " ").replace("data\\", "");
-            System.out.printf("%d. %s\n", i, gameName);
-            i++;
-        }
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints all valid save files in the {@code saves} directory.
-     * 
-     * @param saves List of valid save files in {@code saves}
-     * @throws IOException
-     */
-    private static void printSaves(ArrayList<File> saves) throws IOException {
-        if (saves.size() == 0) {
-            logError("There are no valid saves :(");
-            return;
-        }
-        System.out.print(BLUE);
-        System.out.println("SAVES:");
-        int i = 1;
-        for (File save : saves) {
-            String saveName = save.toString().replace(".json", "").replace("saves\\", "");
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            System.out.printf("%d. %-12s - %s\n", i, saveName, sdf.format(save.lastModified()));
-            i++;
-        }
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints commands for main menu
-     */
-    private static void logHelpMainMenu() {
-        System.out.print(GOLD);
-        System.out.println("<[n]ew game>    - start a new game");
-        System.out.println("<[l]oad>        - load an existing save");
-        logHelpCommon();
-    }
-
-    /**
-     * Print commands for new game menu
-     */
-    private static void logHelpNewGame() {
-        System.out.print(GOLD);
-        System.out.println("<game_number>   - start a new game");
-        System.out.println("<[b]ack>        - return to main menu");
-        logHelpCommon();
-    }
-
-    /**
-     * Prints commands for load menu
-     */
-    private static void logHelpLoad() {
-        System.out.print(GOLD);
-        System.out.println("<save_number>   - load an existing save");
-        System.out.println("<[b]ack>        - return to main menu");
-        logHelpCommon();
-    }
-
-    /**
-     * Prints commands common to all menus
-     */
-    private static void logHelpCommon() {
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints error message to player
-     * 
-     * @param error
-     */
-    private static void logError(String error) {
-        System.out.print(RED);
-        System.out.println(error);
-        System.out.println(ESC);
-    }
-
-    /**
-     * Helper function, clears the terminal.
-     */
-    private static void clearTerminal() {
-        System.out.print("\033[H\033[2J");
     }
 }
