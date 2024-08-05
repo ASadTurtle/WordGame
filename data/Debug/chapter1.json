@@ -5,15 +5,16 @@
             "lines": "The lines of the scene",
             "sceneType": "node",
             "branches": [
-                {"bScene": "2", "prompt": "This will end the game"},
+                {"bScene": "2", "prompt": "This will take you to chapter 2"},
                 {"bScene": "3", "prompt": "This is a leaf scene"},
                 {"bScene": "4", "prompt": "This requires 'Debug_Perk'", "requirement": {"type": "perk", "req": "Debug_Perk"}},
-                {"bScene": "5", "prompt": "This should not print", "requirement": {"type": "perk", "req": "Invalid"}}
+                {"bScene": "5", "prompt": "This should not print", "requirement": {"type": "perk", "req": "Invalid"}},
+                {"bScene": "6", "prompt": "This branch kills you"}
             ],
             "event": {"type": "getPerk", "arg": "Debug_Perk"}
         },
         "2": {
-            "lines": "Thou art dead!",
+            "lines": "You made it! On to chapter 2...",
             "sceneType": "leaf"
         },
         "3": {
@@ -30,6 +31,10 @@
             "lines": "If you made it here, you broke something!",
             "sceneType": "leaf",
             "nextScene": "1"
+        },
+        "6": {
+            "lines": "Thou Art Dead...",
+            "sceneType": "terminus"
         }
     },
     "nextChapter": "2"

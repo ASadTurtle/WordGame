@@ -61,6 +61,11 @@ public class Game {
                 // Run scene logic
                 Scene scene = scenes.get(currScene);
                 currScene = scene.run(inputScanner, scenes, player);
+
+                // If player just ran a terminus scene, end the game.
+                System.out.println(scene.getClass().getName());
+                if (scene.getClass().equals(scenes.TerminusScene.class))
+                    nextChapter = Optional.empty();
             }
 
             // If we were given the next chapter, load it now
