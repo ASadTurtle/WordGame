@@ -20,6 +20,7 @@ import scenes.Branch;
 import scenes.LeafScene;
 import scenes.NodeScene;
 import scenes.Scene;
+import scenes.TerminusScene;
 
 /**
  * This class is responsible for parsing the JSON file with the given filename,
@@ -106,6 +107,10 @@ public class GameParser {
         if (sceneType.matches("node")) {
             ArrayList<Branch> branches = parseBranches(jScene);
             return new NodeScene(index, lines, event, branches);
+        }
+
+        if (sceneType.matches("terminus")) {
+            return new TerminusScene(index, lines);
         }
         return null;
     }
