@@ -49,13 +49,17 @@ public class Game {
     private static final String ESC = "\033[0m";
 
     public static void main(String[] args) throws IOException {
-        // Initialise the game
-        mainMenu();
+        // Loop until player quits
+        while (true) {
+            // Initialise the game
+            Scanner inputScanner = new Scanner(System.in);
+            mainMenu(inputScanner);
 
-        // Debug message for game state
-        System.out.printf(
-                "Player name: %s\nLines in this scene: %s\nThe current scene is: %s\nThe next chapter is: %s\nGame name: %s\n\n",
-                player.getName(), scenes.get(currScene).lines(), currScene, nextChapter.orElse("0"), gameName);
+            // Debug message for game state
+            System.out.printf(
+                    "Player name: %s\nLines in this scene: %s\nThe current scene is: %s\nThe next chapter is: %s\nGame name: %s\n\n",
+                    player.getName(), scenes.get(currScene).lines(), currScene, nextChapter.orElse("0"), gameName);
+        }
     }
 
     /**
@@ -64,20 +68,18 @@ public class Game {
      * 
      * @throws IOException
      */
-    private static void mainMenu() throws IOException {
-        Scanner initScanner = new Scanner(System.in);
+    private static void mainMenu(Scanner sc) throws IOException {
         // Prompt player to select a game, or load a save.
         clearTerminal();
         printMainMenu();
 
         while (true) {
-            String input = initScanner.nextLine();
+            String input = sc.nextLine();
 
             // Start a new game
             if (input.matches("[nN](ew [gG]ame)?|1")) {
                 clearTerminal();
-                if (newGame()) {
-                    initScanner.close();
+                if (newGame(sc)) {
                     break;
                 }
                 printMainMenu();
@@ -87,8 +89,7 @@ public class Game {
             // Load save
             if (input.matches("[lL](oad)?|2")) {
                 clearTerminal();
-                if (loadSave()) {
-                    initScanner.close();
+                if (loadSave(sc)) {
                     break;
                 }
                 printMainMenu();
@@ -98,7 +99,7 @@ public class Game {
             // Quit
             if (input.matches("[qQ](uit)?|3")) {
                 clearTerminal();
-                initScanner.close();
+                sc.close();
                 System.exit(0);
             }
 
@@ -122,7 +123,7 @@ public class Game {
      * @return {@code true} if a new game was successfully created, {@code false} if
      *         we go back to the main menu
      */
-    private static boolean newGame() {
+    private static boolean newGame(Scanner sc) {
         File gamesDir = new File("data");
 
         // Add each available game directory to array
@@ -135,15 +136,15 @@ public class Game {
         }
 
         // Loop until user selects a game to play.
-        Scanner newGameScanner = new Scanner(System.in);
         printGames(games);
         while (true) {
-            String input = newGameScanner.nextLine();
+            String input = sc.nextLine();
 
             // Quit
             if (input.matches("[qQ](uit)?")) {
                 clearTerminal();
                 // Leave immediately
+                sc.close();
                 System.exit(0);
             }
 
@@ -181,7 +182,6 @@ public class Game {
                     gameName = game.replace("data\\", "");
 
                     clearTerminal();
-                    newGameScanner.close();
                     break;
 
                 } catch (Exception e) {
@@ -208,7 +208,7 @@ public class Game {
      * @return {@code true} if save was successfully loaded, {@code false} if we go
      *         back to main menu
      */
-    private static boolean loadSave() throws IOException {
+    private static boolean loadSave(Scanner sc) throws IOException {
         File savesDir = new File("saves");
 
         // Add each valid saves filepath to array
@@ -220,16 +220,15 @@ public class Game {
         // Sort saves by last modified time (Descending)
         saves.sort(Comparator.comparingLong(File::lastModified).reversed());
 
-        // Loop until user selects save to load from
-        Scanner loadScanner = new Scanner(System.in);
         printSaves(saves);
         while (true) {
-            String input = loadScanner.nextLine();
+            String input = sc.nextLine();
 
             // Quit
             if (input.matches("[qQ](uit)?")) {
                 clearTerminal();
                 // Leave immediately
+                sc.close();
                 System.exit(0);
             }
 
@@ -262,7 +261,6 @@ public class Game {
                     gameName = gp.parseGameName();
 
                     clearTerminal();
-                    loadScanner.close();
                     break;
 
                 } catch (Exception e) {
