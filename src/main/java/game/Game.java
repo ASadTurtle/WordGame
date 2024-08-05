@@ -86,10 +86,10 @@ public class Game {
         GameMenu.printMainMenu();
 
         while (true) {
-            String input = sc.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Start a new game
-            if (input.matches("[nN](ew [gG]ame)?|1")) {
+            if (input.matches("[n](ew game)?|1")) {
                 GameMenu.clearTerminal();
                 if (newGame(sc)) {
                     break;
@@ -99,7 +99,7 @@ public class Game {
             }
 
             // Load save
-            if (input.matches("[lL](oad)?|2")) {
+            if (input.matches("[l](oad)?|2")) {
                 GameMenu.clearTerminal();
                 if (loadSave(sc)) {
                     break;
@@ -109,14 +109,14 @@ public class Game {
             }
 
             // Quit
-            if (input.matches("[qQ](uit)?|3")) {
+            if (input.matches("[q](uit)?|3")) {
                 GameMenu.clearTerminal();
                 sc.close();
                 System.exit(0);
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
+            if (input.matches("[h](elp)?")) {
                 GameMenu.clearTerminal();
                 GameMenu.printMainMenu();
                 GameMenu.logHelpMainMenu();
@@ -150,10 +150,10 @@ public class Game {
         // Loop until user selects a game to play.
         GameMenu.printGames(games);
         while (true) {
-            String input = sc.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Quit
-            if (input.matches("[qQ](uit)?")) {
+            if (input.matches("[q](uit)?")) {
                 GameMenu.clearTerminal();
                 // Leave immediately
                 sc.close();
@@ -161,13 +161,13 @@ public class Game {
             }
 
             // Back to main menu
-            if (input.matches("[bB](ack)?")) {
+            if (input.matches("[b](ack)?")) {
                 GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
+            if (input.matches("[h](elp)?")) {
                 GameMenu.clearTerminal();
                 GameMenu.printGames(games);
                 GameMenu.logHelpNewGame();
@@ -234,10 +234,10 @@ public class Game {
 
         GameMenu.printSaves(saves);
         while (true) {
-            String input = sc.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Quit
-            if (input.matches("[qQ](uit)?")) {
+            if (input.matches("[q](uit)?")) {
                 GameMenu.clearTerminal();
                 // Leave immediately
                 sc.close();
@@ -245,13 +245,13 @@ public class Game {
             }
 
             // Back to main menu
-            if (input.matches("[bB](ack)?")) {
+            if (input.matches("[b](ack)?")) {
                 GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
+            if (input.matches("[h](elp)?")) {
                 GameMenu.clearTerminal();
                 GameMenu.printSaves(saves);
                 GameMenu.logHelpLoad();
