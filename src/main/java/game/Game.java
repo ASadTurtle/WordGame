@@ -63,7 +63,8 @@ public class Game {
                 currScene = scene.run(inputScanner, scenes, player);
 
                 // If player just ran a terminus scene, end the game.
-                if (scene.getClass().getName().matches("TerminusScene"))
+                System.out.println(scene.getClass().getName());
+                if (scene.getClass().equals(scenes.TerminusScene.class))
                     nextChapter = Optional.empty();
             }
 
