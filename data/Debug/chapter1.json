@@ -1,0 +1,36 @@
+{
+    "currScene": "1",
+    "scenes": {
+        "1": {
+            "lines": "The lines of the scene",
+            "sceneType": "node",
+            "branches": [
+                {"bScene": "2", "prompt": "This will end the game"},
+                {"bScene": "3", "prompt": "This is a leaf scene"},
+                {"bScene": "4", "prompt": "This requires 'Debug_Perk'", "requirement": {"type": "perk", "req": "Debug_Perk"}},
+                {"bScene": "5", "prompt": "This should not print", "requirement": {"type": "perk", "req": "Invalid"}}
+            ],
+            "event": {"type": "getPerk", "arg": "Debug_Perk"}
+        },
+        "2": {
+            "lines": "Thou art dead!",
+            "sceneType": "leaf"
+        },
+        "3": {
+            "lines": "Welcome to the leaf scene! You should not return here",
+            "sceneType": "leaf",
+            "nextScene": "1"
+        },
+        "4": {
+            "lines": "Congrats! You have the debug perk! Never return...",
+            "sceneType": "leaf",
+            "nextScene": "1"
+        },
+        "5": {
+            "lines": "If you made it here, you broke something!",
+            "sceneType": "leaf",
+            "nextScene": "1"
+        }
+    },
+    "nextChapter": "2"
+}

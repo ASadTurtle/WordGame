@@ -31,7 +31,6 @@
         "1.1.1.1": {
             "lines": "Your blood runs cold when you notice a strange distribution in the wieght of your body. Something that should be there is not anymore.",
             "sceneType": "node",
-            "roots": ["1.1.1"],
             "branches": [
                 {
                     "bScene": "1.1.1.0",
