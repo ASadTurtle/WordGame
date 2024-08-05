@@ -1,7 +1,8 @@
 package scenes;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.Scanner;
 
 import events.Event;
 import game.Player;
@@ -27,13 +28,11 @@ import game.Player;
 public abstract class Scene {
     private String index;
     private String lines;
-    private ArrayList<String> roots;
     private Optional<Event> event;
 
-    public Scene(String index, String lines, ArrayList<String> roots, Optional<Event> event) {
+    public Scene(String index, String lines, Optional<Event> event) {
         this.index = index;
         this.lines = lines;
-        this.roots = roots;
         this.event = event;
     }
 
@@ -45,9 +44,18 @@ public abstract class Scene {
         return this.lines;
     }
 
-    public ArrayList<String> roots() {
-        return this.roots;
+    public void logEvent() {
+        if (event.isPresent()) {
+            event.get().logEvent();
+        }
     }
+
+    /**
+     * The run behaviour of the scene. Outputs the index of the next scene.
+     * 
+     * @return The index of the next scene
+     */
+    public abstract String run(Scanner sc, HashMap<String, Scene> scenes, Player player);
 
     /**
      * Modify the players state by resolving the event in this scene, if one
@@ -58,6 +66,7 @@ public abstract class Scene {
     public void runEvent(Player player) {
         if (event.isPresent()) {
             event.get().runEvent(player);
+            event.get().logEvent();
         }
     }
 }

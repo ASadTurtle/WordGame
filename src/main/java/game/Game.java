@@ -1,8 +1,10 @@
 package game;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -43,19 +45,41 @@ public class Game {
     private static Optional<String> nextChapter;
     private static String gameName;
 
-    private static final String RED = "\033[31m";
-    private static final String GOLD = "\033[33m";
-    private static final String BLUE = "\033[34m";
-    private static final String ESC = "\033[0m";
-
     public static void main(String[] args) throws IOException {
-        // Initialise the game
-        mainMenu();
+        Scanner inputScanner = new Scanner(System.in);
 
-        // Debug message for game state
-        System.out.printf(
-                "Player name: %s\nLines in this scene: %s\nThe current scene is: %s\nThe next chapter is: %s\nGame name: %s\n\n",
-                player.getName(), scenes.get(currScene).lines(), currScene, nextChapter.orElse("0"), gameName);
+        // Initialise the game
+        mainMenu(inputScanner);
+
+        // Loop until player quits
+        while (true) {
+
+            // Run the game
+            while (!currScene.isBlank()) {
+                GameMenu.clearTerminal();
+
+                // Run scene logic
+                Scene scene = scenes.get(currScene);
+                currScene = scene.run(inputScanner, scenes, player);
+            }
+
+            // If we were given the next chapter, load it now
+            if (nextChapter.isPresent()) {
+                // Get path for next chapter file
+                String chapterName = "chapter" + nextChapter.get() + ".json";
+                System.out.println(gameName);
+                Path filePath = Paths.get(gameName, chapterName);
+                System.out.println(filePath);
+                File nextChapter = filePath.toFile();
+
+                // Load next chapter
+                loadGame(nextChapter);
+            }
+            // Otherwise, go to main menu
+            else {
+                mainMenu(inputScanner);
+            }
+        }
     }
 
     /**
@@ -64,55 +88,52 @@ public class Game {
      * 
      * @throws IOException
      */
-    private static void mainMenu() throws IOException {
-        Scanner initScanner = new Scanner(System.in);
+    private static void mainMenu(Scanner sc) throws IOException {
         // Prompt player to select a game, or load a save.
-        clearTerminal();
-        printMainMenu();
+        GameMenu.clearTerminal();
+        GameMenu.printMainMenu();
 
         while (true) {
-            String input = initScanner.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Start a new game
-            if (input.matches("[nN](ew [gG]ame)?|1")) {
-                clearTerminal();
-                if (newGame()) {
-                    initScanner.close();
+            if (input.matches("[n](ew game)?|1")) {
+                GameMenu.clearTerminal();
+                if (newGame(sc)) {
                     break;
                 }
-                printMainMenu();
+                GameMenu.printMainMenu();
                 continue;
             }
 
             // Load save
-            if (input.matches("[lL](oad)?|2")) {
-                clearTerminal();
-                if (loadSave()) {
-                    initScanner.close();
+            if (input.matches("[l](oad)?|2")) {
+                GameMenu.clearTerminal();
+                if (loadSave(sc)) {
                     break;
                 }
-                printMainMenu();
+                GameMenu.printMainMenu();
                 continue;
             }
 
             // Quit
-            if (input.matches("[qQ](uit)?|3")) {
-                clearTerminal();
-                initScanner.close();
+            if (input.matches("[q](uit)?|3")) {
+                GameMenu.clearTerminal();
+                sc.close();
                 System.exit(0);
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printMainMenu();
-                logHelpMainMenu();
+            if (input.matches("[h](elp)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printMainMenu();
+                GameMenu.logHelpMainMenu();
                 continue;
             }
 
-            clearTerminal();
-            printMainMenu();
-            logError("Invalid option, use [h]elp for a list of commands");
+            GameMenu.clearTerminal();
+            GameMenu.printMainMenu();
+            GameMenu.logError("Invalid option, use [h]elp for a list of commands");
         }
     }
 
@@ -122,7 +143,7 @@ public class Game {
      * @return {@code true} if a new game was successfully created, {@code false} if
      *         we go back to the main menu
      */
-    private static boolean newGame() {
+    private static boolean newGame(Scanner sc) {
         File gamesDir = new File("data");
 
         // Add each available game directory to array
@@ -135,29 +156,29 @@ public class Game {
         }
 
         // Loop until user selects a game to play.
-        Scanner newGameScanner = new Scanner(System.in);
-        printGames(games);
+        GameMenu.printGames(games);
         while (true) {
-            String input = newGameScanner.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Quit
-            if (input.matches("[qQ](uit)?")) {
-                clearTerminal();
+            if (input.matches("[q](uit)?")) {
+                GameMenu.clearTerminal();
                 // Leave immediately
+                sc.close();
                 System.exit(0);
             }
 
             // Back to main menu
-            if (input.matches("[bB](ack)?")) {
-                clearTerminal();
+            if (input.matches("[b](ack)?")) {
+                GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printGames(games);
-                logHelpNewGame();
+            if (input.matches("[h](elp)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printGames(games);
+                GameMenu.logHelpNewGame();
                 continue;
             }
 
@@ -170,35 +191,43 @@ public class Game {
                     File chapter = new File(game + "\\chapter1.json");
 
                     // Load game data from default player file
-                    GameParser playerParser = new GameParser(playerDefault);
-                    player = playerParser.parsePlayer();
+                    loadPlayer(playerDefault);
 
                     // Load game data from chapter 1
-                    GameParser chapterParser = new GameParser(chapter);
-                    scenes = chapterParser.parseScenes();
-                    currScene = chapterParser.parseCurrScene();
-                    nextChapter = chapterParser.parseNextChapter();
-                    gameName = game.replace("data\\", "");
+                    loadGame(chapter);
+                    gameName = game;
 
-                    clearTerminal();
-                    newGameScanner.close();
+                    GameMenu.clearTerminal();
                     break;
 
                 } catch (Exception e) {
-                    clearTerminal();
-                    printGames(games);
-                    logError(e.getMessage());
+                    GameMenu.clearTerminal();
+                    GameMenu.printGames(games);
+                    GameMenu.logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
-                clearTerminal();
-                printGames(games);
-                logError("Invalid option, use [h]elp for a list of commands");
+                GameMenu.clearTerminal();
+                GameMenu.printGames(games);
+                GameMenu.logError("Invalid option, use [h]elp for a list of commands");
                 continue;
             }
         }
 
         return true;
+    }
+
+    // TODO
+    private static void loadPlayer(File playerDefault) throws FileNotFoundException {
+        GameParser playerParser = new GameParser(playerDefault);
+        player = playerParser.parsePlayer();
+    }
+
+    private static void loadGame(File chapter) throws FileNotFoundException {
+        GameParser chapterParser = new GameParser(chapter);
+        scenes = chapterParser.parseScenes();
+        currScene = chapterParser.parseCurrScene();
+        nextChapter = chapterParser.parseNextChapter();
     }
 
     /**
@@ -208,7 +237,7 @@ public class Game {
      * @return {@code true} if save was successfully loaded, {@code false} if we go
      *         back to main menu
      */
-    private static boolean loadSave() throws IOException {
+    private static boolean loadSave(Scanner sc) throws IOException {
         File savesDir = new File("saves");
 
         // Add each valid saves filepath to array
@@ -220,30 +249,29 @@ public class Game {
         // Sort saves by last modified time (Descending)
         saves.sort(Comparator.comparingLong(File::lastModified).reversed());
 
-        // Loop until user selects save to load from
-        Scanner loadScanner = new Scanner(System.in);
-        printSaves(saves);
+        GameMenu.printSaves(saves);
         while (true) {
-            String input = loadScanner.nextLine();
+            String input = sc.nextLine().toLowerCase();
 
             // Quit
-            if (input.matches("[qQ](uit)?")) {
-                clearTerminal();
+            if (input.matches("[q](uit)?")) {
+                GameMenu.clearTerminal();
                 // Leave immediately
+                sc.close();
                 System.exit(0);
             }
 
             // Back to main menu
-            if (input.matches("[bB](ack)?")) {
-                clearTerminal();
+            if (input.matches("[b](ack)?")) {
+                GameMenu.clearTerminal();
                 return false;
             }
 
             // Print commands
-            if (input.matches("[hH](elp)?")) {
-                clearTerminal();
-                printSaves(saves);
-                logHelpLoad();
+            if (input.matches("[h](elp)?")) {
+                GameMenu.clearTerminal();
+                GameMenu.printSaves(saves);
+                GameMenu.logHelpLoad();
                 continue;
             }
 
@@ -254,144 +282,26 @@ public class Game {
                     File save = saves.get(saveOption);
 
                     // Load Game data from save file
-                    GameParser gp = new GameParser(save);
-                    player = gp.parsePlayer();
-                    scenes = gp.parseScenes();
-                    currScene = gp.parseCurrScene();
-                    nextChapter = gp.parseNextChapter();
-                    gameName = gp.parseGameName();
+                    loadPlayer(save);
+                    loadGame(save);
+                    gameName = new GameParser(save).parseGameName();
 
-                    clearTerminal();
-                    loadScanner.close();
+                    GameMenu.clearTerminal();
                     break;
 
                 } catch (Exception e) {
-                    clearTerminal();
-                    printSaves(saves);
-                    logError(e.getMessage());
+                    GameMenu.clearTerminal();
+                    GameMenu.printSaves(saves);
+                    GameMenu.logError(e.getMessage());
                     continue;
                 }
             } catch (NumberFormatException e) {
-                clearTerminal();
-                printSaves(saves);
-                logError("Invalid option. Use [h]elp for a list of commands");
+                GameMenu.clearTerminal();
+                GameMenu.printSaves(saves);
+                GameMenu.logError("Invalid option. Use [h]elp for a list of commands");
                 continue;
             }
         }
-
         return true;
-    }
-
-    /**
-     * Print Main Menu options to player.
-     */
-    private static void printMainMenu() {
-        System.out.print(BLUE);
-        System.out.println("WELCOME TO THE WORDGAME PROJECT!");
-        System.out.println("1. New Game");
-        System.out.println("2. Load");
-        System.out.println("3. Quit");
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints all valid WordGames in the {@code data} directory.
-     * 
-     * @param games List of valid directories in {@code data}
-     */
-    private static void printGames(ArrayList<String> games) {
-        if (games.size() == 0) {
-            logError("There are no valid games :(");
-            return;
-        }
-        System.out.print(BLUE);
-        System.out.println("SELECT A GAME:");
-        int i = 1;
-        for (String game : games) {
-            String gameName = game.replace("_", " ").replace("data\\", "");
-            System.out.printf("%d. %s\n", i, gameName);
-            i++;
-        }
-        System.out.println();
-    }
-
-    /**
-     * Prints all valid save files in the {@code saves} directory.
-     * 
-     * @param saves List of valid save files in {@code saves}
-     * @throws IOException
-     */
-    private static void printSaves(ArrayList<File> saves) throws IOException {
-        if (saves.size() == 0) {
-            logError("There are no valid saves :(");
-            return;
-        }
-        System.out.print(BLUE);
-        System.out.println("SAVES:");
-        int i = 1;
-        for (File save : saves) {
-            String saveName = save.toString().replace(".json", "").replace("saves\\", "");
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-            System.out.printf("%d. %-12s - %s\n", i, saveName, sdf.format(save.lastModified()));
-            i++;
-        }
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints commands for main menu
-     */
-    private static void logHelpMainMenu() {
-        System.out.print(GOLD);
-        System.out.println("<[n]ew game>    - start a new game");
-        System.out.println("<[l]oad>        - load an existing save");
-        logHelpCommon();
-    }
-
-    /**
-     * Print commands for new game menu
-     */
-    private static void logHelpNewGame() {
-        System.out.print(GOLD);
-        System.out.println("<game_number>   - start a new game");
-        System.out.println("<[b]ack>        - return to main menu");
-        logHelpCommon();
-    }
-
-    /**
-     * Prints commands for load menu
-     */
-    private static void logHelpLoad() {
-        System.out.print(GOLD);
-        System.out.println("<save_number>   - load an existing save");
-        System.out.println("<[b]ack>        - return to main menu");
-        logHelpCommon();
-    }
-
-    /**
-     * Prints commands common to all menus
-     */
-    private static void logHelpCommon() {
-        System.out.println("<[q]uit>        - quit the game");
-        System.out.println("<[h]elp>        - print this message");
-        System.out.println(ESC);
-    }
-
-    /**
-     * Prints error message to player
-     * 
-     * @param error
-     */
-    private static void logError(String error) {
-        System.out.print(RED);
-        System.out.println(error);
-        System.out.println(ESC);
-    }
-
-    /**
-     * Helper function, clears the terminal.
-     */
-    private static void clearTerminal() {
-        System.out.print("\033[H\033[2J");
     }
 }

@@ -175,10 +175,6 @@ The parser should handle loading and saving a scenes type on its own, but it
 is suggested you do not alter the type of a scene in the save file.
 - `event: Event` - This field is **optional**. It represents a JSON Event
 object.
-- `roots: String[]` - This list holds all the indices of scenes that directly
-lead to this scene. When this scene is resolved, the root scenes should no
-longer have a branch that leads to this scene. The roots list may be empty, in
-the case of the first scene the player enters.
 
 ```json
 "scenes" : {
@@ -187,7 +183,6 @@ the case of the first scene the player enters.
                 "You only remember your name. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke."
             ],
             "sceneType": "node", 
-            "roots": [],
             ...
         },
     ...
@@ -203,7 +198,6 @@ The following fields are required for `node` type scenes:
     "1.1.1": {
             "lines": ["You slowly draw your attention inward, using your will to focus past the pain and assess your body."],
             "sceneType": "node",
-            "roots": ["1.1"],
             "branches": [
                 {"bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
                 {"bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "getPerk", "arg": "Athletic"}},

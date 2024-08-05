@@ -34,10 +34,29 @@ public class Player {
     }
 
     /**
+     * Prints information about the player to terminal
+     */
+    public void logPlayer() {
+        GameMenu.logPlayer(this);
+    }
+
+    /**
      * @return The players name
      */
-    public String getName() {
+    public String name() {
         return name;
+    }
+
+    public ArrayList<String> perks() {
+        return perks;
+    }
+
+    public ArrayList<String> items() {
+        return items;
+    }
+
+    public ArrayList<String> statuses() {
+        return statuses;
     }
 
     /**

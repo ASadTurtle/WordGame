@@ -1,0 +1,9 @@
+{
+    "currScene": "1",
+    "scenes": {
+        "1": {
+            "lines": "WELCOME TO CHAPTER 2!!!\nYou died the end.",
+            "sceneType": "leaf"
+        }
+    }
+}

@@ -25,4 +25,9 @@ public interface Event {
      * @param player The player character
      */
     public void runEvent(Player player);
+
+    /**
+     * Prints the result of the event to the player.
+     */
+    public void logEvent();
 }

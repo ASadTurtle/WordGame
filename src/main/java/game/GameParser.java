@@ -30,7 +30,7 @@ import scenes.Scene;
 public class GameParser {
 
     // File parsed to JSON Object
-    JSONObject jFile;
+    private JSONObject jFile;
 
     /**
      * Given the filename of a JSON data file or JSON save file, creates a
@@ -96,17 +96,16 @@ public class GameParser {
         // Get common scene fields
         String lines = jScene.getString("lines");
         Optional<Event> event = parseEvent(jScene);
-        ArrayList<String> roots = parseListStr(jScene.getJSONArray("roots"));
 
         // Get additional fields based on type
         if (sceneType.matches("leaf")) {
-            String nextScene = jScene.getString("nextScene");
-            return new LeafScene(index, lines, roots, event, nextScene);
+            String nextScene = jScene.optString("nextScene");
+            return new LeafScene(index, lines, event, nextScene);
         }
 
         if (sceneType.matches("node")) {
             ArrayList<Branch> branches = parseBranches(jScene);
-            return new NodeScene(index, lines, roots, event, branches);
+            return new NodeScene(index, lines, event, branches);
         }
         return null;
     }

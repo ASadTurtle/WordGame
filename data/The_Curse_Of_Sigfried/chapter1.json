@@ -4,7 +4,6 @@
         "1.1": {
             "lines": "You only remember your name, %s. Your attempts to recall more of your past only bring the fever in your mind back to your attention. Shifting slightly over the stone bed, you feel the sticky dampness of blood in your clothes, and recognise the smell of copper and smoke.",
             "sceneType": "node", 
-            "roots": [],
             "branches": [
                 {"bScene": "1.1.1", "prompt": "Assess my wounds"},
                 {"bScene": "1.1.2", "prompt": "Try to stand"},
@@ -15,26 +14,23 @@
         "1.1.1": {
             "lines": "You slowly draw your attention inward, using your will to focus past the pain and assess your body.",
             "sceneType": "node",
-            "roots": ["1.1"],
             "branches": [
-                {"bScene": "1.1.1.0", "prompt": "It takes little effort, I’ve always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
+                {"bScene": "1.1.1.0", "prompt": "It takes little effort, I've always been resiliant. I feel fine.", "event": {"type": "getPerk", "arg": "Hale"}},
                 {"bScene": "1.1.1.0", "prompt": "The strong thumping of my hearts is no trouble, my engine throttles faster than most.", "event": {"type": "getPerk", "arg": "Athletic"}},
-                {"bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I’m stronger than this.", "event": {"type": "getPerk", "arg": "Strong"}},
+                {"bScene": "1.1.1.0", "prompt": "My body feels like a great, Brassteel machine. I know I'm stronger than this.", "event": {"type": "getPerk", "arg": "Strong"}},
                 {"bScene": "1.1.1.0", "prompt": "Nothing appears out of the ordinary."},
                 {"bScene": "1.1.1.1", "prompt": "Something feels missing..."}
             ]
         },
         "1.1.1.0": {
-            "lines": "You also notice the pain localised in your chest is likely fractures in your rib-plates [Gain status: Wounded Torso]. It may be immensly painful, but you don’t feel faint or nauseous. Your mind drifts back to your current situation.",
+            "lines": "You also notice the pain localised in your chest is likely fractures in your rib-plates [Gain status: Wounded Torso]. It may be immensly painful, but you don't feel faint or nauseous. Your mind drifts back to your current situation.",
             "event": {"type": "getStatus", "arg": "Wounded torso"},
             "sceneType": "leaf",
-            "roots": ["1.1.1", "1.1.1.1"],
             "nextScene": "1.1"
         },
         "1.1.1.1": {
             "lines": "Your blood runs cold when you notice a strange distribution in the wieght of your body. Something that should be there is not anymore.",
             "sceneType": "node",
-            "roots": ["1.1.1"],
             "branches": [
                 {
                     "bScene": "1.1.1.0",
