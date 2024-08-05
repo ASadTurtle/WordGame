@@ -215,6 +215,29 @@ The following fields are required for `leaf` type scenes:
 - `nextScene: String` - index of the next scene after this leaf scene. **must**
 correspond to an existing scene in the library.
 
+```json
+{
+    "1.1.1.0": {
+        "lines": "You also notice the pain localised in your chest is likely fractures in your rib-plates [Gain status: Wounded Torso]. It may be immensly painful, but you don't feel faint or nauseous. Your mind drifts back to your current situation.",
+        "event": {"type": "getStatus", "arg": "Wounded torso"},
+        "sceneType": "leaf",
+        "nextScene": "1.1"
+    },
+}
+```
+
+The following fields are required for `terminus` type scenes require no additional
+fields.
+
+```json
+{
+    "6": {
+        "lines": "Thou Art Dead...",
+        "sceneType": "terminus"
+    }
+}
+```
+
 ### `event`
 
 An event object consists of the following fields:
