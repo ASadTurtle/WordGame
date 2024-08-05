@@ -99,7 +99,7 @@ public class GameParser {
 
         // Get additional fields based on type
         if (sceneType.matches("leaf")) {
-            String nextScene = jScene.getString("nextScene");
+            String nextScene = jScene.optString("nextScene");
             return new LeafScene(index, lines, event, nextScene);
         }
 
