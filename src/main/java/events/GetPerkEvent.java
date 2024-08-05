@@ -22,6 +22,6 @@ public class GetPerkEvent implements Event {
     }
 
     public void logEvent() {
-        System.out.printf("\\033[93mNew Perk: %s\\n", perk);
+        System.out.printf("\033[93mNew Perk: %s\n\n\033[0m", perk);
     }
 }

@@ -21,7 +21,6 @@ public class GetStatusEvent implements Event {
         player.gainStatus(status);
     }
 
-    @Override
     public void logEvent() {
         System.out.printf("\033[93mNew Status: %s\n\n\033[0m", status);
     }
