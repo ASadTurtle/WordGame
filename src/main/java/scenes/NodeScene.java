@@ -77,6 +77,7 @@ public class NodeScene extends Scene {
             if (input.matches("[p](layer)?")) {
                 GameMenu.clearTerminal();
                 GameMenu.printScene(lines(), player);
+                logEvent();
                 GameMenu.printBranches(elligbleBranches, player);
                 player.logPlayer();
                 continue;
@@ -86,6 +87,7 @@ public class NodeScene extends Scene {
             if (input.matches("[h](elp)?")) {
                 GameMenu.clearTerminal();
                 GameMenu.printScene(lines(), player);
+                logEvent();
                 GameMenu.printBranches(elligbleBranches, player);
                 GameMenu.logHelpScene();
                 continue;
@@ -105,6 +107,7 @@ public class NodeScene extends Scene {
                 } catch (IndexOutOfBoundsException e) {
                     GameMenu.clearTerminal();
                     GameMenu.printScene(lines(), player);
+                    logEvent();
                     GameMenu.printBranches(elligbleBranches, player);
                     GameMenu.logError("Invalid branch");
                     continue;
@@ -112,6 +115,7 @@ public class NodeScene extends Scene {
             } catch (NumberFormatException e) {
                 GameMenu.clearTerminal();
                 GameMenu.printScene(lines(), player);
+                logEvent();
                 GameMenu.printBranches(elligbleBranches, player);
                 GameMenu.logError("Invalid option. Use [h]elp for a list of commands");
                 continue;
