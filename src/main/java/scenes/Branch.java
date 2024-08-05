@@ -34,6 +34,10 @@ public class Branch {
         return prompt;
     }
 
+    public boolean hasRequirement() {
+        return requirement.isPresent();
+    }
+
     /**
      * Run the requirement for this branch, if it has one. If it does not then
      * it is always true.

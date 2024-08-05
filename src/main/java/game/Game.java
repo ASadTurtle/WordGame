@@ -43,9 +43,9 @@ public class Game {
     private static Optional<String> nextChapter;
     private static String gameName;
 
-    private static final String RED = "\033[31m";
-    private static final String GOLD = "\033[33m";
-    private static final String BLUE = "\033[34m";
+    private static final String RED = "\033[91m";
+    private static final String GOLD = "\033[93m";
+    private static final String BLUE = "\033[94m";
     private static final String ESC = "\033[0m";
 
     public static void main(String[] args) throws IOException {
@@ -55,10 +55,14 @@ public class Game {
             Scanner inputScanner = new Scanner(System.in);
             mainMenu(inputScanner);
 
-            // Debug message for game state
-            System.out.printf(
-                    "Player name: %s\nLines in this scene: %s\nThe current scene is: %s\nThe next chapter is: %s\nGame name: %s\n\n",
-                    player.getName(), scenes.get(currScene).lines(), currScene, nextChapter.orElse("0"), gameName);
+            // Run the game
+            while (!currScene.isBlank()) {
+                clearTerminal();
+
+                // Run scene logic
+                Scene scene = scenes.get(currScene);
+                currScene = scene.run(inputScanner, scenes, player);
+            }
         }
     }
 
@@ -310,7 +314,7 @@ public class Game {
             System.out.printf("%d. %s\n", i, gameName);
             i++;
         }
-        System.out.println();
+        System.out.println(ESC);
     }
 
     /**
