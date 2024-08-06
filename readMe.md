@@ -1,4 +1,7 @@
+
 # Word Game
+
+![WordGame Logo](./images/WordGameSmall.png)
 
 Word Game is a project I started on the July 25th 2024 as a learning exercise.
 The goal is to create a classic, text-based, CYOA game. I aimed to learn multiple
@@ -343,6 +346,8 @@ original Rubber Duck for this project.
 this project.
 - Dad: Nodding while I explain my project, discussing old CYOA books and games
 he used to play. Advising to touch grass.
+- Ibrahim Halloum: All art for the project, including the WordGame logo. Ibrahim
+is the owner of these images, and has allowed me to use them for the project.
 
 ## Personal notes
 
