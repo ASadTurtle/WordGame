@@ -346,8 +346,9 @@ original Rubber Duck for this project.
 this project.
 - Dad: Nodding while I explain my project, discussing old CYOA books and games
 he used to play. Advising to touch grass.
-- Ibrahim Halloum: All art for the project, including the WordGame logo. Ibrahim
-is the owner of these images, and has allowed me to use them for the project.
+- [Ibrahim Halloum](https://x.com/_IBZIII): All art for the project,
+including the WordGame logo. Ibrahim is the owner of these images,
+and has allowed me to use them for the project.
 
 ## Personal notes
 
